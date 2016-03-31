@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="template.xhtml">
+	<ui:define name="titulo">
+            Producto/Servicio
+        </ui:define>
+	<ui:define name="contenido">
+		<br />
+		<h:form id="frm">
+			<p:messages closable="true"></p:messages>
+			<b:panel title="Registro de Productos o Servicios" look="primary">
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Tipo* " />
+					</b:column>
+					<b:column span="10" style="margin-bottom:10px">
+						<h:panelGroup>
+							<h:selectOneMenu styleClass="form-control" value="#{recursosServiciosBean.pro_tipo}">
+							<f:ajax event="change" listener="#{recursosServiciosBean.tipoest()}" render="stock"/>
+							<f:selectItems value="#{recursosServiciosBean.listTipo}" />
+							</h:selectOneMenu>
+						</h:panelGroup>
+					</b:column>
+				</b:row>
+				
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Codigo* " />
+					</b:column>
+					<b:column span="10">
+						<b:inputText value="#{recursosServiciosBean.prodser_id}" required="true"
+							requiredMessage="Campo nombre requerido">
+						</b:inputText>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Codigo de barras* " />
+					</b:column>
+					<b:column span="10">
+						<b:inputText value="#{recursosServiciosBean.pro_cod_barras}" required="true"
+							requiredMessage="Campo codigo de barras requerido">
+						</b:inputText>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Nombre* " />
+					</b:column>
+					<b:column span="10">
+						<b:inputText value="#{recursosServiciosBean.pro_nombre}" required="true"
+							requiredMessage="Campo nombre requerido">
+						</b:inputText>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Descripción* " />
+					</b:column>
+					<b:column span="10">
+						<p:inputTextarea value="#{recursosServiciosBean.pro_descripcion}"
+							style="width:100%; margin-bottom:15px;" required="true"
+							requiredMessage="Campo descripción requerido" />
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Categoria*: " />
+					</b:column>
+					<b:column span="10" style="margin-bottom:10px">
+						<h:panelGroup>
+							<h:selectOneMenu id="trackseleccionar" required="true"
+								styleClass="form-control"
+								value="#{recursosServiciosBean.cat_id}">
+								<f:selectItems value="#{recursosServiciosBean.listaCatalogo}" />
+								<f:ajax render="trackseleccionar2" />
+							</h:selectOneMenu>
+						</h:panelGroup>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Categoria items*: " />
+					</b:column>
+					<b:column span="10" style="margin-bottom:10px">
+						<h:panelGroup>
+							<h:selectOneMenu id="trackseleccionar2" required="true"
+								styleClass="form-control"
+								value="#{recursosServiciosBean.cati_id}">
+								<f:selectItems value="#{recursosServiciosBean.listaCatalogoitem}" />
+								<f:ajax listener="#{recursosServiciosBean.asignarCatItem()}" />
+							</h:selectOneMenu>
+						</h:panelGroup>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Costo*" />
+					</b:column>
+					<b:column span="10">
+						<b:inputText value="#{recursosServiciosBean.pro_costo}" required="true" converter="bigDecimalConverter"
+						requiredMessage="Campo costo requerido" validatorMessage="Solo ingrese numeros.">
+							<f:converter converterId="javax.faces.BigDecimal"/>
+							<f:validateRegex pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$"  />
+							<f:facet name="prepend">
+								<h:outputText value="$" />
+							</f:facet>
+						</b:inputText>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Precio* " />
+					</b:column>
+					<b:column span="10">
+						<b:inputText value="#{recursosServiciosBean.pro_precio}" required="true" converter="bigDecimalConverter"
+						requiredMessage="Campo precio requerido" validatorMessage="Solo ingrese numeros.">
+							<f:validateRegex pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$"  />
+							<f:facet name="prepend">
+								<h:outputText value="$" />
+							</f:facet>
+						</b:inputText>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Stock* " />
+					</b:column>
+					<b:column span="10">
+						<b:inputText id="stock" value="#{recursosServiciosBean.pro_stock}" disabled="#{recursosServiciosBean.ediciontipo}"
+						 validatorMessage="Solo ingrese numeros.">
+							<f:validateRegex pattern="^[0-9-_]+$"/>
+						</b:inputText>
+					</b:column>
+				</b:row>
+				<br />
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Estado*" rendered="#{recursosServiciosBean.edicion}" />
+					</b:column>
+					<b:column span="10">
+						<b:selectOneMenu value="#{recursosServiciosBean.pro_estado}"
+							rendered="#{recursosServiciosBean.edicion}">
+							<f:selectItems value="#{recursosServiciosBean.listEstados}" />
+						</b:selectOneMenu>
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="2">
+						<h:outputLabel value="Estado Funcional*" rendered="#{recursosServiciosBean.edicion}" />
+					</b:column>
+					<b:column span="10">
+						<b:selectOneMenu value="#{recursosServiciosBean.pro_estado_funcional}"
+							rendered="#{recursosServiciosBean.edicion}">
+							<f:selectItems value="#{recursosServiciosBean.listEstadosfuncional}" />
+						</b:selectOneMenu>
+					</b:column>
+				</b:row>
+				<br />
+				<b:commandButton value="Guardar"
+					action="#{recursosServiciosBean.crearProducto()}" update="frm" look="info"></b:commandButton>&nbsp;&nbsp;&nbsp;
+					<b:commandButton value="Cancelar" action="#{recursosServiciosBean.salir}"
+					immediate="true" update="frm" look="info"></b:commandButton>
+			</b:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+
+</html>
