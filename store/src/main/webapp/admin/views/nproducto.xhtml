@@ -13,7 +13,7 @@
 	<ui:define name="contenido">
 		<br />
 		<h:form id="frm">
-			<p:messages closable="true"></p:messages>
+			<p:messages id="message" closable="true"></p:messages>
 			<b:panel title="Registro de Productos o Servicios" look="primary">
 				<b:row>
 					<b:column span="2">
@@ -28,7 +28,6 @@
 						</h:panelGroup>
 					</b:column>
 				</b:row>
-				
 				<b:row>
 					<b:column span="2">
 						<h:outputLabel value="Codigo* " />
@@ -104,13 +103,8 @@
 						<h:outputLabel value="Costo*" />
 					</b:column>
 					<b:column span="10">
-						<b:inputText value="#{recursosServiciosBean.pro_costo}" required="true" converter="bigDecimalConverter"
+						<b:inputText value="#{recursosServiciosBean.pro_costo}" required="true"
 						requiredMessage="Campo costo requerido" validatorMessage="Solo ingrese numeros.">
-							<f:converter converterId="javax.faces.BigDecimal"/>
-							<f:validateRegex pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$"  />
-							<f:facet name="prepend">
-								<h:outputText value="$" />
-							</f:facet>
 						</b:inputText>
 					</b:column>
 				</b:row>
@@ -119,12 +113,8 @@
 						<h:outputLabel value="Precio* " />
 					</b:column>
 					<b:column span="10">
-						<b:inputText value="#{recursosServiciosBean.pro_precio}" required="true" converter="bigDecimalConverter"
+						<b:inputText value="#{recursosServiciosBean.pro_precio}" required="true"
 						requiredMessage="Campo precio requerido" validatorMessage="Solo ingrese numeros.">
-							<f:validateRegex pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$"  />
-							<f:facet name="prepend">
-								<h:outputText value="$" />
-							</f:facet>
 						</b:inputText>
 					</b:column>
 				</b:row>
@@ -135,7 +125,6 @@
 					<b:column span="10">
 						<b:inputText id="stock" value="#{recursosServiciosBean.pro_stock}" disabled="#{recursosServiciosBean.ediciontipo}"
 						 validatorMessage="Solo ingrese numeros.">
-							<f:validateRegex pattern="^[0-9-_]+$"/>
 						</b:inputText>
 					</b:column>
 				</b:row>
@@ -153,18 +142,35 @@
 				</b:row>
 				<b:row>
 					<b:column span="2">
-						<h:outputLabel value="Estado Funcional*" rendered="#{recursosServiciosBean.edicion}" />
+						<h:outputLabel value="Estado Funcional*"
+							rendered="#{recursosServiciosBean.edicion}" />
 					</b:column>
 					<b:column span="10">
-						<b:selectOneMenu value="#{recursosServiciosBean.pro_estado_funcional}"
+						<b:selectOneMenu
+							value="#{recursosServiciosBean.pro_estado_funcional}"
 							rendered="#{recursosServiciosBean.edicion}">
-							<f:selectItems value="#{recursosServiciosBean.listEstadosfuncional}" />
+							<f:selectItems
+								value="#{recursosServiciosBean.listEstadosfuncional}" />
 						</b:selectOneMenu>
 					</b:column>
 				</b:row>
+				<p:fileUpload mode="advanced" dragDropSupport="true"
+				    update="frm imagen" multiple="false" invalidSizeMessage="Archivo excede limite 2 MB "
+					invalidFileMessage="Tipo invalido, solo .jpeg y .png"
+					fileLimitMessage="Solo una imagen por Ubicación"
+					allowTypes="/(\.|\/)(gif|jpe?g|png)$/" cancelLabel="Cancelar"
+					uploadLabel="Subir" label="Seleccionar" fileLimit="1"
+					fileUploadListener="#{recursosServiciosBean.ImagenServ()}" >
+				</p:fileUpload>
+				<h:outputText value="Vista Previa: "/>      			 			 
+   				<p:graphicImage id="imagen" value="/imgevent/#{recursosServiciosBean.imagen}" width="150" height="150" />
+				
+
+
 				<br />
-				<b:commandButton value="Guardar"
-					action="#{recursosServiciosBean.crearProducto()}" update="frm" look="info"></b:commandButton>&nbsp;&nbsp;&nbsp;
+				<b:commandButton value="Crear Producto" action="#{recursosServiciosBean.crearProducto()}" update="frm" look="info">
+				<f:ajax event="change" listener="#{recursosServiciosBean.imagenprod()}" render="imagen"/>
+				</b:commandButton>&nbsp;&nbsp;&nbsp;
 					<b:commandButton value="Cancelar" action="#{recursosServiciosBean.salir}"
 					immediate="true" update="frm" look="info"></b:commandButton>
 			</b:panel>

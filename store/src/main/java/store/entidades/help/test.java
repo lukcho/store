@@ -7,9 +7,7 @@ public class test {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		ManagerProductosServicios mprod = new ManagerProductosServicios();
-		FabCatalogo fcat = mprod.getcatalogo("Prod001");
-		System.out.println(" pp "+fcat.getCatNombre()+" : "+fcat.getCatValor()+" ");
+		
 	}
 
 }

@@ -16,6 +16,7 @@ public class ManagerProductosServicios{
 
 	private static FabProducto fab_prod;
 	private static FabCatalogoitem fab_cati;
+	
 	String h="";		
 				
 	public ManagerProductosServicios() {
@@ -29,7 +30,7 @@ public class ManagerProductosServicios{
 	 */	
 	
 	@SuppressWarnings("unchecked")
-	public List<FabProducto> findprodalogo() {
+	public List<FabProducto> findprod() {
 		return mDAO.findWhere(FabProducto.class, "1=1", null);
 	}
 
@@ -50,15 +51,6 @@ public class ManagerProductosServicios{
 	 */
 	public FabProducto ProductoByID(String prod_id) throws Exception {
 		return (FabProducto) mDAO.findById(FabProducto.class, prod_id);
-	}
-	
-	/**
-	 * buscar catalogo_item por ID
-	 * @param prod_id
-	 * @throws Exception
-	 */
-	public FabCatalogoitem CatalogoItemByID(Integer cati_id) throws Exception {
-		return (FabCatalogoitem) mDAO.findById(FabCatalogoitem.class, cati_id);
 	}
 	
 	/**
@@ -156,6 +148,17 @@ public class ManagerProductosServicios{
 		return resp;
 	}
 	
+	//CATALOGOITEM
+	
+	/**
+	 * buscar catalogo_item por ID
+	 * @param prod_id
+	 * @throws Exception
+	 */
+	public FabCatalogoitem CatalogoItemByID(Integer cati_id) throws Exception {
+		return (FabCatalogoitem) mDAO.findById(FabCatalogoitem.class, cati_id);
+	}
+	
 	/**
 	 * 	metodo para asignar el producto a un item
 	 * @param u prodalogo a analizar
@@ -171,63 +174,14 @@ public class ManagerProductosServicios{
 	 		return fab_cati;
 		}
 	
-	public FabCatalogo getcatalogo(String pro_id)
-	{
-		return (FabCatalogo) mDAO.findJPQL("select  c.* from FabCatalogo c, "
-				+ "FabCatalogoitem ci, FabProducto p where p.fabCatalogoitem.catiId = ci.catiId and ci.fabCatalogo.catId=c.catId and p.proId = '"+pro_id+"'");
-	}
-	
-	public FabProductoFoto getprodfoto(String pro_id)
-	{
-		return (FabProductoFoto) mDAO.findJPQL("select  pf.* from fab_producto_fotos pf, fab_producto p "
-				+ "where p.pro_id = pf.pro_id and p.pro_id '"+pro_id+"'");
-	}
-	
-	// PRODUCTOFOTOS
 	/**
-	 * buscar todos productofotos
-	 * @param prodfoto_id
-	 * @param nombre
-	 * @param valor
-	 * @throws Exception
-	 */	
-	
-	@SuppressWarnings("unchecked")
-	public List<FabProductoFoto> findProdFoto() {
-		return mDAO.findWhere(FabProductoFoto.class, " ", null);
-	}
-
-	/**
-	 * listar todos los prodalogositems
-	 * @param id_prod
-	 * @param nombre
-	 * @param valor
-	 * @throws Exception
-	 */	
-	@SuppressWarnings("unchecked") 
-	public List<FabProductoFoto> findAllprodfotos() {
-		return mDAO.findAll(FabProductoFoto.class);
-	}
-
-	/**
-	 * buscar producto_foto por ID
-	 * @param id_prod
-	 * @param nombre
-	 * @param valor
-	 * @throws Exception
-	 */
-	public FabProductoFoto productofotoByID(Integer prodfoto_id) throws Exception {
-		return (FabProductoFoto) mDAO.findById(FabProductoFoto.class, prodfoto_id);
-	}
-	
-	/**
-	 * Agrega producto_foto
+	 * Agrega producto_catalogoItem
 	 * @param prod_id
 	 * @param nombre
 	 * @param valor
 	 * @throws Exception
 	 */
-	public void insertarprodalogoItems(Integer prodfoto_id, String nombre,String direccion) throws Exception {
+	public void insertarprodalogoItems(String nombre,String direccion) throws Exception {
 		FabProductoFoto prodfoto = new FabProductoFoto();
 		prodfoto.setFabProducto(fab_prod);
 		prodfoto.setProfNombre(nombre);
@@ -237,7 +191,7 @@ public class ManagerProductosServicios{
 	}
 
 	/**
-	 * Cambiar datos de prodalogoItems
+	 * Cambiar datos de producto_catalogoItem
 	 * @param id_prod
 	 * @param nombre
 	 * @param valor
@@ -252,8 +206,84 @@ public class ManagerProductosServicios{
 		mDAO.actualizar(prodfoto);
 	}
 	
+	// PRODUCTOFOTOS
 	/**
-	 * Cambiar estado prodalogoItems
+	 * buscar todos productofotos
+	 * @param prodfoto_id
+	 * @param nombre
+	 * @param valor
+	 * @throws Exception
+	 */	
+	
+	@SuppressWarnings("unchecked")
+	public List<FabProductoFoto> findProdFoto() {
+		return mDAO.findWhere(FabProductoFoto.class, "1=1", null);
+	}
+
+	/**
+	 * listar todos los productofotos
+	 * @param id_prod
+	 * @param nombre
+	 * @param valor
+	 * @throws Exception
+	 */	
+	@SuppressWarnings("unchecked") 
+	public List<FabProductoFoto> findAllprodfotos() {
+		return mDAO.findAll(FabProductoFoto.class);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<FabProductoFoto> getListProdfotoByID(String pro_id)
+	{
+		
+		return mDAO.findWhere(FabProductoFoto.class, "o.prodId="+pro_id, null);
+	}
+
+	/**
+	 * buscar productofotos por ID
+	 * @param id_prod
+	 * @param nombre
+	 * @param valor
+	 * @throws Exception
+	 */
+	public FabProductoFoto productofotoByID(Integer prodfoto_id) throws Exception {
+		return (FabProductoFoto) mDAO.findById(FabProductoFoto.class, prodfoto_id);
+	}
+	
+	/**
+	 * Agrega productofoto
+	 * @param prod_id
+	 * @param nombre
+	 * @param valor
+	 * @throws Exception
+	 */
+	public void insertarproducto_foto(String nombre,String direccion) throws Exception {
+		FabProductoFoto prodfoto = new FabProductoFoto();
+		prodfoto.setFabProducto(fab_prod);
+		prodfoto.setProfNombre(nombre);
+		prodfoto.setProfDireccion(direccion);
+		prodfoto.setProfEstado("A");
+		mDAO.insertar(prodfoto);
+	}
+	
+	/**
+	 * Cambiar datos de producto_catalogoItem
+	 * @param id_prod
+	 * @param nombre
+	 * @param valor
+	 * @throws Exception
+	 */	
+	public void editarproducto_foto(Integer prodfoto_id, String nombre, String valor, String direccion) throws Exception {
+		FabProductoFoto prodfoto = this.productofotoByID(prodfoto_id);
+		prodfoto.setFabProducto(fab_prod);
+		prodfoto.setProfNombre(nombre);
+		prodfoto.setProfDireccion(direccion);
+		prodfoto.setProfEstado(valor);
+		mDAO.actualizar(prodfoto);
+	}
+		
+	/**
+	 * Cambiar estado productofotos
 	 * @param id_prod
 	 * @param nombre
 	 * @param apellido
@@ -268,8 +298,8 @@ public class ManagerProductosServicios{
 			prodfoto.setProfEstado("I");
 			h="Estado del prodalogo Modificado";
 			}
-		else if(prodfoto.getProfEstado().equals("D")){
-			prodfoto.setProfEstado("I");
+		else if(prodfoto.getProfEstado().equals("I")){
+			prodfoto.setProfEstado("A");
 			h="Estado del Registro Modificado";
 			}
 		mDAO.actualizar(prodfoto);
