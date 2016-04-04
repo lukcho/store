@@ -72,7 +72,8 @@ public class RecursosServiciosBean implements Serializable{
 	private boolean imagenprod;
 	
 	private List<FabProducto> listaProducto;
-		
+	private List<FabProductoFoto> listaProductofoto;
+	
 	public RecursosServiciosBean(){	
 	}
 		
@@ -82,10 +83,13 @@ public class RecursosServiciosBean implements Serializable{
 		pro_stock=1;
 		pro_estado_funcional="A";
 		cat_id=0;
+		pro_costo=BigDecimal.ZERO;
+		pro_precio=BigDecimal.ZERO;
 		edicion = false;
 		ediciontipo = false;
 		imagenprod=false;
 		listaProducto = managerprod.findAllProductos();
+		listaProductofoto= new ArrayList<FabProductoFoto>();
 	}
 	
 	public boolean isImagenprod() {
@@ -249,6 +253,14 @@ public class RecursosServiciosBean implements Serializable{
 		this.listaProducto = listaProducto;
 	}
 
+	public List<FabProductoFoto> getListaProductofoto() {
+		return listaProductofoto;
+	}
+
+	public void setListaProductofoto(List<FabProductoFoto> listaProductofoto) {
+		this.listaProductofoto = listaProductofoto;
+	}
+
 	//accion para invocar el manager y crear producto
 	public String crearProducto(){
 		String r = "";
@@ -261,24 +273,25 @@ public class RecursosServiciosBean implements Serializable{
 								pro_precio, pro_stock, pro_estado,
 								pro_estado_funcional);
 				Mensaje.crearMensajeINFO("Actualizado - Modificado");
-				r = "productos?faces-redirect=true";
-				// limpiamos los datos
-				pro_descripcion = "";
-				prodser_id = "";
-				pro_nombre = "";
-				pro_cod_barras = "";
-				pro_tipo = "";
-				pro_descripcion = "";
-				pro_costo = BigDecimal.ZERO;
-				pro_precio = BigDecimal.ZERO;
-				pro_stock = 1;
-				pro_estado = "A";
-				pro_estado_funcional = "";
-				imagen = "300.jpg";
-				edicion = false;
-				imagenprod=true;
-				getListaProducto().clear();
-				getListaProducto().addAll(managerprod.findAllProductos());
+				
+//				r = "productos?faces-redirect=true";
+//				// limpiamos los datos
+//				pro_descripcion = "";
+//				prodser_id = "";
+//				pro_nombre = "";
+//				pro_cod_barras = "";
+//				pro_tipo = "";
+//				pro_descripcion = "";
+//				pro_costo = BigDecimal.ZERO;
+//				pro_precio = BigDecimal.ZERO;
+//				pro_stock = 1;
+//				pro_estado = "A";
+//				pro_estado_funcional = "";
+//				imagen = "300.jpg";
+//				edicion = false;
+//				imagenprod=true;
+//				getListaProducto().clear();
+//				getListaProducto().addAll(managerprod.findAllProductos());
 			} else {
 				
 				managerprod.insertarProducto(prodser_id, pro_nombre,
@@ -286,10 +299,7 @@ public class RecursosServiciosBean implements Serializable{
 						pro_precio, pro_stock);
 				Mensaje.crearMensajeINFO("Registrado - Creado");
 				imagenprod = false;
-				
 				asignarprofoto();
-				managerprod.insertarproducto_foto(pro_nombre, imagen);
-				
 //				r = "productos?faces-redirect=true";
 //		     	reiniciamos datos (limpiamos el formulario)
 //				pro_descripcion = "";
@@ -394,13 +404,16 @@ public class RecursosServiciosBean implements Serializable{
 				FabCatalogo fab = managercat.CatalogoByID(prod.getFabCatalogoitem().getFabCatalogo().getCatId());
 				cat_id= fab.getCatId();
 				cati_id=prod.getFabCatalogoitem().getCatiId();//sacar el catalogoitem
+				cati_id=prod.getFabCatalogoitem().getCatiId();//sacar el catalogoitem
 //				FabCatalogo fcat = managerprod.getcatalogo(prodser_id);//sacxar el tipo catalogo
 //				cat_id=fcat.getCatId();
 				//FabProductoFoto prodfoto = managerprod.getprodfoto(prodser_id);//sacar las fotos
+				asignarNombreImagen();
 				edicion = true;
 				imagenprod=false;
-				getListaProducto().clear();
-				getListaProducto().addAll(managerprod.findAllProductos());
+				
+				getListaProductofoto().clear();
+				getListaProductofoto().addAll(managerprod.productoFotoByNombre(pro_nombre));
 				return "nproducto?faces-redirect=true";
 			} catch (Exception e) {
 				// TODO: handle exception
@@ -409,7 +422,7 @@ public class RecursosServiciosBean implements Serializable{
 			return "";
 		}
 	
-	//activar y desactivar
+	//activar y desactivar estado producto
 	public String cambiarEstado(FabProducto prod){
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -421,6 +434,44 @@ public class RecursosServiciosBean implements Serializable{
 		}
 		return "";
 	}
+	
+	//activar y desactivar estado fotoproducto
+	public String cambiarEstadofoto(FabProductoFoto prod){
+		try {
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage("INFORMACION",managerprod.cambioEstadoprodfoto(prod.getProfId())));
+	        getListaProductofoto().clear();
+			getListaProductofoto().addAll(managerprod.productoFotoByNombre(pro_nombre));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
+
+	// activar y desactivar estado fotoproducto
+	public String eliminarfoto(FabProductoFoto prod) {
+		try {
+			managerprod.eliminarproducto_foto(prod.getProfId());
+			getListaProductofoto().clear();
+			getListaProductofoto().addAll(managerprod.productoFotoByNombre(prod.getProfNombre()));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
+
+	// activar y desactivar estado fotoproducto
+	public String guardarimagen() {
+		try {
+			managerprod.insertarproducto_foto(pro_nombre, imagen);
+			getListaProductofoto().clear();
+			getListaProductofoto().addAll(managerprod.productoFotoByNombre(pro_nombre));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
+				
 	
 	
 	//------ traslados--------
@@ -483,12 +534,12 @@ public class RecursosServiciosBean implements Serializable{
 				while ((read = inputStream.read(bytes)) != -1) {
 					outputStream.write(bytes, 0, read);
 				}
-
+				System.out.println(imagen);
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								"Correcto:", "Carga correcta"));
-
+				guardarimagen();
 			} catch (Exception e) {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -517,6 +568,7 @@ public class RecursosServiciosBean implements Serializable{
 		if (getProdser_id().trim().isEmpty()) {
 			System.out.println("Vacio");
 		} else {
+			System.out.println(getProdser_id());
 			DateFormat dateFormat = new SimpleDateFormat("_ddMMyyyyHHmm");
 			g = "img_" + getProdser_id() + dateFormat.format(new Date())
 					+ ".jpg";
@@ -543,6 +595,7 @@ public class RecursosServiciosBean implements Serializable{
 	public String nuevoProducto() {
 		edicion = false;
 		imagenprod=true;
+		listaProductofoto.clear();
 		return "nproducto?faces-redirect=true";
 	}
 	
@@ -567,6 +620,8 @@ public class RecursosServiciosBean implements Serializable{
 		imagen = "300.jpg";
 		edicion = false;
 		ediciontipo=true;
+		getListaProducto().clear();
+		getListaProducto().addAll(managerprod.findAllProductos());
 		return "productos?faces-redirect=true";
 	}
 	

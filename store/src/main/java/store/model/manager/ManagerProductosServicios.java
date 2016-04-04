@@ -250,6 +250,12 @@ public class ManagerProductosServicios{
 		return (FabProductoFoto) mDAO.findById(FabProductoFoto.class, prodfoto_id);
 	}
 	
+
+	@SuppressWarnings("unchecked")
+	public List<FabProductoFoto> productoFotoByNombre(String prodfoto_id) throws Exception {
+		return mDAO.findWhere(FabProductoFoto.class, "o.profNombre='"+prodfoto_id+"'", null);
+	}
+	
 	/**
 	 * Agrega productofoto
 	 * @param prod_id
@@ -264,6 +270,15 @@ public class ManagerProductosServicios{
 		prodfoto.setProfDireccion(direccion);
 		prodfoto.setProfEstado("A");
 		mDAO.insertar(prodfoto);
+	}
+	
+	/**
+	 * Elimina productofoto
+	 * @param prod_id
+	 * @throws Exception
+	 */
+	public void eliminarproducto_foto(Integer prof_id) throws Exception {
+		mDAO.eliminar(FabProductoFoto.class,prof_id);
 	}
 	
 	/**
