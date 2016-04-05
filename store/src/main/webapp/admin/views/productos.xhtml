@@ -23,50 +23,74 @@
 				</b:row>
 			</h:form>
 			<br/>
-        	<h:form id="frm">
-				<p:growl id="messages" showDetail="true" />
-				<b:panel title="Listado de productos" look="primary">
-					<p:dataTable id="tbb" value="#{recursosServiciosBean.listaProducto}" reflow="true" var="pro" rows="8" emptyMessage="Sin Datos"
-					 paginator="true" 
-   					 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
-    					<p:column headerText="OPCIONES" width="50">
-							<p:commandButton id="btnE" icon="ui-icon-pencil" action="#{recursosServiciosBean.cargarProducto(pro)}"/>
+		<h:form id="frm">
+			<p:growl id="messages" showDetail="true" />
+			<b:panel title="Listado de productos" look="primary">
+				<p:dataTable id="tbb" value="#{recursosServiciosBean.listaProducto}"
+					reflow="true" var="pro" rows="8" emptyMessage="Sin Datos"
+					paginator="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+					<p:column headerText="OPCIONES" width="50">
+						<p:commandButton id="btnE" icon="ui-icon-pencil"
+							action="#{recursosServiciosBean.cargarProducto(pro)}">
+							<p:tooltip id="toolTipTrack1" for="btnE"
+								value="Bot&oacute;n para modificar el producto"
+								trackMouse="true" />
+						</p:commandButton>
 							&nbsp;&nbsp;&nbsp;
-							<p:commandButton id="trackcamb" icon="ui-icon-refresh" actionListener="#{recursosServiciosBean.cambiarEstado(pro)}" update="frm">
-							<p:tooltip id="toolTipTrack3" for="trackcamb" value="Bot&oacute;n para cambiar el estado del producto" trackMouse="true" />
-							</p:commandButton>
-						</p:column>
-    					<p:column filterBy="#{pro.proId}" filterMatchMode="contains" headerText="CODIGO" width="70">
-							<h:outputText value="#{pro.proId}"></h:outputText>
-						</p:column>
-						<p:column filterBy="#{pro.proNombre}" filterMatchMode="contains" headerText="NOMBRE" width="70">
-							<h:outputText value="#{pro.proNombre}"></h:outputText>
-						</p:column>
-						<p:column filterBy="#{pro.proCodigoBarras}" filterMatchMode="contains" headerText="Cod. de BARRAS" width="60">
-							<h:outputText value="#{pro.proCodigoBarras}"></h:outputText>
-						</p:column>
-						<p:column headerText="TIPO" width="30">
-							<h:outputText value="#{pro.proTipo}"></h:outputText>
-						</p:column>
-						<p:column headerText="COSTO" width="30">
-							<h:outputText value="#{pro.proCosto}"></h:outputText>
-						</p:column>
-						<p:column headerText="PRECIO" width="30">
-							<h:outputText value="#{pro.proPrecio}"></h:outputText>
-						</p:column>
-						<p:column headerText="STOCK" width="30">
-							<h:outputText value="#{pro.proStock}"></h:outputText>
-						</p:column>
-						<p:column headerText="ESTADO" width="30">
-							<h:outputText value="#{pro.proEstado}"></h:outputText>
-						</p:column>
-						<p:column headerText="ESTADO FUNCIONAL" width="60">
-							<h:outputText value="#{pro.proEstadoFuncional}"></h:outputText>
-						</p:column>
-    				</p:dataTable>
-				</b:panel>
+							<p:commandButton id="trackcamb" icon="ui-icon-refresh"
+							action="#{recursosServiciosBean.cambiarEstadoprod(pro)}">
+							<p:tooltip id="toolTipTrack2" for="trackcamb"
+								value="Bot&oacute;n para cambiar el estado del producto"
+								trackMouse="true" />
+						</p:commandButton>
+					</p:column>
+					<p:column filterBy="#{pro.proId}" filterMatchMode="contains"
+						headerText="CODIGO" width="70">
+						<h:outputText value="#{pro.proId}"></h:outputText>
+					</p:column>
+					<p:column filterBy="#{pro.proNombre}" filterMatchMode="contains"
+						headerText="NOMBRE" width="70">
+						<h:outputText value="#{pro.proNombre}"></h:outputText>
+					</p:column>
+					<p:column filterBy="#{pro.proCodigoBarras}"
+						filterMatchMode="contains" headerText="Cod. de BARRAS" width="60">
+						<h:outputText value="#{pro.proCodigoBarras}"></h:outputText>
+					</p:column>
+					<p:column headerText="TIPO" width="30">
+						<h:outputText value="#{pro.proTipo}"></h:outputText>
+					</p:column>
+					<p:column headerText="COSTO" width="30">
+						<h:outputText value="#{pro.proCosto}"></h:outputText>
+					</p:column>
+					<p:column headerText="PRECIO" width="30">
+						<h:outputText value="#{pro.proPrecio}"></h:outputText>
+					</p:column>
+					<p:column headerText="STOCK" width="30">
+						<h:outputText value="#{pro.proStock}"></h:outputText>
+					</p:column>
+					<p:column headerText="ESTADO" width="30">
+						<h:outputText value="#{pro.proEstado}"></h:outputText>
+					</p:column>
+					<p:column headerText="ESTADO FUNCIONAL" width="60">
+						<h:outputText value="#{pro.proEstadoFuncional}"></h:outputText>
+					</p:column>
+				</p:dataTable>
+			</b:panel>
+		</h:form>
+		<p:confirmDialog header="Confirmación"
+			message="Está seguro de cambiar el estado?" closable="false"
+			showEffect="fade" hideEffect="explode" widgetVar="ce">
+			<h:form>
+				<p:commandButton value="Yes" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check"
+					action="#{recursosServiciosBean.cambiarEstado()}"
+					oncomplete="PF('ce').hide();" update="frm" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+					onclick="PF('ce').hide();" />
 			</h:form>
-        </ui:define>
+		</p:confirmDialog>
+	</ui:define>
 	</ui:composition>
-	
 </html>

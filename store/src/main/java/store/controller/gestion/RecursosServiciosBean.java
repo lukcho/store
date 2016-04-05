@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -74,6 +75,10 @@ public class RecursosServiciosBean implements Serializable{
 	private String g;
 	private boolean imagenprod;
 	
+	private FabProducto prodelsita; 
+	private FabProductoFoto prodelsitafot; 
+
+	
 	private List<FabProducto> listaProducto;
 	private List<FabProductoFoto> listaProductofoto;
 	
@@ -103,6 +108,22 @@ public class RecursosServiciosBean implements Serializable{
 		listaProductofoto= new ArrayList<FabProductoFoto>();
 	}
 	
+	public FabProductoFoto getProdelsitafot() {
+		return prodelsitafot;
+	}
+
+	public void setProdelsitafot(FabProductoFoto prodelsitafot) {
+		this.prodelsitafot = prodelsitafot;
+	}
+
+	public FabProducto getProdelsita() {
+		return prodelsita;
+	}
+
+	public void setProdelsita(FabProducto prodelsita) {
+		this.prodelsita = prodelsita;
+	}
+
 	public boolean isMostrarpro_id() {
 		return mostrarpro_id;
 	}
@@ -409,10 +430,10 @@ public class RecursosServiciosBean implements Serializable{
 	 * @param pro_id
 	 * @throws Exception
 	 */
-	public String cambiarEstado(FabProducto prod){
+	public String cambiarEstado(){
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
-	        context.addMessage(null, new FacesMessage("INFORMACION",managerprod.cambioEstadoprod(prod.getProId())));
+	        context.addMessage(null, new FacesMessage("INFORMACION",managerprod.cambioEstadoprod(getProdelsita().getProId())));
 	        getListaProducto().clear();
 			getListaProducto().addAll(managerprod.findAllProductos());
 		} catch (Exception e) {
@@ -421,19 +442,32 @@ public class RecursosServiciosBean implements Serializable{
 		return "";
 	}
 	
-	//prodfoto
-	
+	public void cambiarEstadoprod(FabProducto prod) {
+		setProdelsita(prod);
+		RequestContext.getCurrentInstance().execute("PF('ce').show();");
+		System.out.println("holi");
+
+	}
+
+	// prodfoto
+
 	/**
 	 * activar y desactivar estado fotoproducto
+	 * 
 	 * @param pro_id
 	 * @throws Exception
 	 */
-	public String cambiarEstadofoto(FabProductoFoto prod){
+	public String cambiarEstadofoto() {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
-	        context.addMessage(null, new FacesMessage("INFORMACION",managerprod.cambioEstadoprodfoto(prod.getProfId())));
-	        getListaProductofoto().clear();
-			getListaProductofoto().addAll(managerprod.productoFotoByNombre(pro_nombre));
+			context.addMessage(
+					null,
+					new FacesMessage("INFORMACION", managerprod
+							.cambioEstadoprodfoto(getProdelsitafot()
+									.getProfId())));
+			getListaProductofoto().clear();
+			getListaProductofoto().addAll(
+					managerprod.productoFotoByNombre(pro_nombre));
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -441,19 +475,48 @@ public class RecursosServiciosBean implements Serializable{
 	}
 
 	/**
-	 * eliminar un fotoproducto
+	 * eliminar un fotoproducto abriendo el dialogo
+	 * 
 	 * @param pro_id
 	 * @throws Exception
 	 */
-	public String eliminarfoto(FabProductoFoto prod) {
+	public void cambiarEstadoprodfot(FabProductoFoto prod) {
+		setProdelsitafot(prod);
+		RequestContext.getCurrentInstance().execute("PF('ce').show();");
+		System.out.println("holi");
+
+	}
+
+	/**
+	 * eliminar un fotoproducto
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String eliminarfoto() {
 		try {
-			managerprod.eliminarproducto_foto(prod.getProfId());
+			managerprod.eliminarproducto_foto(getProdelsitafot().getProfId());
 			getListaProductofoto().clear();
-			getListaProductofoto().addAll(managerprod.productoFotoByNombre(prod.getProfNombre()));
+			getListaProductofoto().addAll(
+					managerprod.productoFotoByNombre(getProdelsitafot()
+							.getProfNombre()));
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 		return "";
+	}
+
+	/**
+	 * eliminar un fotoproducto abriendo el dialogo
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public void eliminarfotocon(FabProductoFoto prod) {
+		setProdelsitafot(prod);
+		RequestContext.getCurrentInstance().execute("PF('ef').show();");
+		System.out.println("holi");
+		
 	}
 
 	/**
@@ -795,31 +858,6 @@ public class RecursosServiciosBean implements Serializable{
 	}
 	
 	//------ traslados--------
-	
-	/**
-	 * ir nuevo producto o servicio
-	 * 
-	 * @return
-	 */
-	public String irRecurso(){
-		FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Cancelado!", "Actualizacion Cancelada"));
-      //limpiamos los datos
-        pro_descripcion="";
-		prodser_id="";
-		pro_nombre="";
-		pro_cod_barras="";
-		pro_tipo="";
-		pro_descripcion="";
-		pro_costo=null;
-		pro_precio=null;
-		pro_stock="1";
-		pro_estado="A";
-		pro_estado_funcional="";
-		imagen = "300.jpg";
-		edicion=false;
-		return "";					
-	}
 	
 	/**
 	 * limpia la informacion de horario
