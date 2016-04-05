@@ -134,8 +134,21 @@ public class ManagerCatalogos{
 	
 	@SuppressWarnings("unchecked")
 	public List<FabCatalogoitem> findCatalogoItemsByCatalogo(Integer catId) {
-		return mDAO.findWhere(FabCatalogoitem.class, "o.fabCatalogo.catId="+catId, null);
+		return mDAO.findWhere(FabCatalogoitem.class, "o.fabCatalogo.catId= "+catId+ " and cati_id_padre= 0", null);
 	}
+	
+	
+	/**
+	 * buscar todos catalogosItemsitems
+	 * @param catId
+	 * @throws Exception
+	 */	
+	
+	@SuppressWarnings("unchecked")
+	public List<FabCatalogoitem> findCatalogoItemshijosByCatalogo(Integer cati_Id) {
+		return mDAO.findWhere(FabCatalogoitem.class, "o.catiIdPadre = "+cati_Id , null);
+	}
+	
 
 	/**
 	 * listar todos los catalogositems

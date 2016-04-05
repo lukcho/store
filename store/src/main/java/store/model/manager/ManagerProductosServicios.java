@@ -97,7 +97,7 @@ public class ManagerProductosServicios{
 	 */	
 	public void editarproducto(String pro_id, String nombre, String cod_barras,String tipo, String descripcion, BigDecimal costo, BigDecimal precio, Integer stock, String estado, String estado_funcional) throws Exception {
 		FabProducto prod = this.ProductoByID(pro_id);
-		prod.setProId(pro_id);
+ 		prod.setProId(pro_id);
 		prod.setProNombre(nombre);
 		prod.setProCodigoBarras(cod_barras);
 		prod.setProDescripcion(descripcion);

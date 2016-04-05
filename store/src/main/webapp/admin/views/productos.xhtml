@@ -24,7 +24,7 @@
 			</h:form>
 			<br/>
         	<h:form id="frm">
-				<p:messages closable="true"></p:messages>
+				<p:growl id="messages" showDetail="true" />
 				<b:panel title="Listado de productos" look="primary">
 					<p:dataTable id="tbb" value="#{recursosServiciosBean.listaProducto}" reflow="true" var="pro" rows="8" emptyMessage="Sin Datos"
 					 paginator="true" 
@@ -36,14 +36,17 @@
 							<p:tooltip id="toolTipTrack3" for="trackcamb" value="Bot&oacute;n para cambiar el estado del producto" trackMouse="true" />
 							</p:commandButton>
 						</p:column>
-    					<p:column filterBy="#{pro.proId}" filterMatchMode="contains" headerText="CODIGO" width="100">
+    					<p:column filterBy="#{pro.proId}" filterMatchMode="contains" headerText="CODIGO" width="70">
 							<h:outputText value="#{pro.proId}"></h:outputText>
 						</p:column>
-						<p:column filterBy="#{pro.proNombre}" filterMatchMode="contains" headerText="NOMBRE" width="100">
+						<p:column filterBy="#{pro.proNombre}" filterMatchMode="contains" headerText="NOMBRE" width="70">
 							<h:outputText value="#{pro.proNombre}"></h:outputText>
 						</p:column>
-						<p:column filterBy="#{pro.proCodigoBarras}" filterMatchMode="contains" headerText="Cod. de BARRAS" width="100">
+						<p:column filterBy="#{pro.proCodigoBarras}" filterMatchMode="contains" headerText="Cod. de BARRAS" width="60">
 							<h:outputText value="#{pro.proCodigoBarras}"></h:outputText>
+						</p:column>
+						<p:column headerText="TIPO" width="30">
+							<h:outputText value="#{pro.proTipo}"></h:outputText>
 						</p:column>
 						<p:column headerText="COSTO" width="30">
 							<h:outputText value="#{pro.proCosto}"></h:outputText>
@@ -57,7 +60,7 @@
 						<p:column headerText="ESTADO" width="30">
 							<h:outputText value="#{pro.proEstado}"></h:outputText>
 						</p:column>
-						<p:column headerText="ESTADO_FUNCIONAL" width="40">
+						<p:column headerText="ESTADO FUNCIONAL" width="60">
 							<h:outputText value="#{pro.proEstadoFuncional}"></h:outputText>
 						</p:column>
     				</p:dataTable>
