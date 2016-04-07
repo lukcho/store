@@ -3,6 +3,7 @@ package store.model.manager;
 import store.model.dao.entities.*;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -16,6 +17,7 @@ public class ManagerProductosServicios{
 
 	private static FabProducto fab_prod;
 	private static FabCatalogoitem fab_cati;
+	private static FabDia fab_dia;
 	
 	String h="";		
 				
@@ -125,11 +127,11 @@ public class ManagerProductosServicios{
 		
 		if(prod.getProEstado().equals("A")){
 			prod.setProEstado("I");
-			h="Estado del prodalogo Modificado";
+			h="Estado Modificado";
 			}
 		else if(prod.getProEstado().equals("I")){
 			prod.setProEstado("A");
-			h="Estado del Registro Modificado";
+			h="Estado Modificado";
 			}
 		mDAO.actualizar(prod);
 		return h;
@@ -350,5 +352,126 @@ public class ManagerProductosServicios{
 		}
 		return fab_prod;
 	}
+
+	// DIA y horario
+
+	/**
+	 * buscar todos Dias
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<FabDia> finddia() {
+		return mDAO.findWhere(FabDia.class, "1=1", null);
+	}
+
+	/**
+	 * listar todos los Dias
+	 * 
+	 * @param prod_id
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<FabDia> findAllDias() {
+		return mDAO.findAll(FabDia.class);
+	}
+
+	/**
+	 * buscar Dia por ID
+	 * 
+	 * @param prod_id
+	 * @throws Exception
+	 */
+	public FabDia DiaByID(Integer dia_id) throws Exception {
+		return (FabDia) mDAO.findById(FabDia.class, dia_id);
+	}
 	
+	/**
+	 * Agrega productofoto
+	 * @param prod_id
+	 * @param nombre
+	 * @param valor
+	 * @throws Exception
+	 */
+	public void insertarhorario(Time hora_inicio, Time hora_final) throws Exception {
+		FabHorario horario = new FabHorario();
+		horario.setFabProducto(fab_prod);
+		horario.setFabDia(fab_dia);
+		horario.setHorHoraInicio(hora_inicio);
+		horario.setHorHoraFinal(hora_final);
+		horario.setHorEstado("A");
+		mDAO.insertar(horario);
+	}
+	
+	/**
+	 * Elimina dia
+	 * @param prod_id
+	 * @throws Exception
+	 */
+	public void eliminarHorario(Integer hor_id) throws Exception {
+		mDAO.eliminar(FabHorario.class,hor_id);
+	}
+	
+	/**
+	 * buscar horario por prodid
+	 * 
+	 * @param prod_id
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<FabHorario> horarioByProdId(String prod_id) throws Exception {
+		return mDAO.findWhere(FabHorario.class, "o.fabProducto.proId='"+prod_id+"'", null);
+	}
+
+	/**
+	 * metodo para asignar el dia a un producto
+	 * 
+	 * @param u
+	 *            Dia a analizar
+	 * @return true o false
+	 */
+	public FabDia asignardia(Integer dia_id) {
+		try {
+			fab_dia = DiaByID(dia_id);
+		} catch (Exception e) {
+			// TODO Auto-generated prodch block
+			e.printStackTrace();
+		}
+		return fab_dia;
+	}
+	
+	/**
+	 * buscar horario por ID
+	 * 
+	 * @param prod_id
+	 * @throws Exception
+	 */
+	public FabHorario HorarioByID(Integer hor_id) throws Exception {
+		return (FabHorario) mDAO.findById(FabHorario.class, hor_id);
+	}
+	
+	/**
+	 * Cambiar estado productofotos
+	 * @param id_prod
+	 * @param nombre
+	 * @param apellido
+	 * @param correo
+	 * @throws Exception
+	 */	
+	public String cambioEstadoHorario(Integer hor_id) throws Exception{
+		String h="";
+		FabHorario fabhor = HorarioByID(hor_id);						
+		
+		if(fabhor.getHorEstado().equals("A")){
+			fabhor.setHorEstado("I");
+			h="Estado del Horario Modificado";
+			}
+		else if(fabhor.getHorEstado().equals("I")){
+			fabhor.setHorEstado("A");
+			h="Estado del Horario Modificado";
+			}
+		mDAO.actualizar(fabhor);
+		return h;
+		}	
+
 }

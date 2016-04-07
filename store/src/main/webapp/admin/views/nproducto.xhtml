@@ -126,7 +126,7 @@
 				</b:row>
 				<b:row>
 					<b:column span="2">
-						<h:outputLabel for="costo" value="Costo:* ($)" />
+						<h:outputLabel  value="Costo:* ($)" />
 					</b:column>
 					<b:column span="4">
 						<b:inputText value="#{recursosServiciosBean.pro_costo}"
@@ -153,10 +153,10 @@
 						<h:outputLabel value="Ver Horario: " />
 					</b:column>
 					<b:column span="4">
-						<b:navLink id="horario" value="Ver Horario"
-							href="../views/horariodisponible.xhtml"
+						<b:navCommandLink id="horario" value="Ver Horario"
+							action="#{recursosServiciosBean.verhorariodePro}"
 							rendered="#{recursosServiciosBean.verhorario}"
-							iconAwesome="sliders"></b:navLink>
+							iconAwesome="sliders"></b:navCommandLink>
 					</b:column>
 				</b:row>
 				<br />
@@ -252,7 +252,7 @@
 			message="Está seguro de guardar la información?" closable="false"
 			showEffect="fade" hideEffect="explode" widgetVar="gu">
 			<h:form>
-				<p:commandButton value="Yes" styleClass="ui-confirmdialog-yes"
+				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
 					icon="ui-icon-check"
 					action="#{recursosServiciosBean.crearProducto()}"
 					oncomplete="PF('gu').hide();" update="frm" />
@@ -261,32 +261,30 @@
 					onclick="PF('gu').hide();" />
 			</h:form>
 		</p:confirmDialog>
-		
-		
-		<p:confirmDialog header="Confirmación"
-			message="Está seguro de cambiar el estado de la imagen?" closable="false"
-			showEffect="fade" hideEffect="explode" widgetVar="ce">
-			<h:form>
-				<p:commandButton value="Yes" styleClass="ui-confirmdialog-yes"
-					icon="ui-icon-check"
-					action="#{recursosServiciosBean.cambiarEstadofoto()}"
-					oncomplete="PF('ce').hide();" update="frm1:tbb" />
-				<p:commandButton value="No" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
-					onclick="PF('ce').hide();" />
-			</h:form>
-		</p:confirmDialog>
 		<p:confirmDialog header="Confirmación"
 			message="Está seguro de borrar la imagen?" closable="false"
 			showEffect="fade" hideEffect="explode" widgetVar="ef">
 			<h:form>
-				<p:commandButton value="Yes" styleClass="ui-confirmdialog-yes"
+				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
 					icon="ui-icon-check"
 					action="#{recursosServiciosBean.eliminarfoto()}"
-					oncomplete="PF('ef').hide();" update="frm1:tbb" />
+					oncomplete="PF('ef').hide();" update="frm frm1:tbb" />
 				<p:commandButton value="No" type="button"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
 					onclick="PF('ef').hide();" />
+			</h:form>
+		</p:confirmDialog>		
+		<p:confirmDialog header="Confirmación"
+			message="Está seguro de cambiar el estado de la imagen?" closable="false"
+			showEffect="fade" hideEffect="explode" widgetVar="ce">
+			<h:form>
+				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check"
+					action="#{recursosServiciosBean.cambiarEstadofoto()}"
+					oncomplete="PF('ce').hide();" update="frm frm1:tbb" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+					onclick="PF('ce').hide();" />
 			</h:form>
 		</p:confirmDialog>
 	</ui:define>

@@ -68,6 +68,7 @@ CREATE SEQUENCE seq_fab_producto_fotos
   CACHE 1;
 ALTER TABLE seq_fab_producto_fotos
   OWNER TO postgres;
+  
 /*==============================================================*/
 /* Table: FAB_CATALOGO                                          */
 /*==============================================================*/
@@ -92,12 +93,22 @@ create table FAB_CATALOGOITEMS (
 );
 
 /*==============================================================*/
+/* Table: FAB_DIAS                                              */
+/*==============================================================*/
+create table FAB_DIAS (
+   DIA_ID               INT4                 not null,
+   DIA_NOMBRE           VARCHAR(20)          null,
+   DIA_ESTADO           CHAR                 null,
+   constraint PK_FAB_DIAS primary key (DIA_ID)
+);
+
+/*==============================================================*/
 /* Table: FAB_HORARIO                                           */
 /*==============================================================*/
 create table FAB_HORARIO (
    HOR_ID               INT4                 not null DEFAULT nextval('seq_fab_horario'::regclass),
    PRO_ID               VARCHAR(20)          null,
-   HOR_DIA              VARCHAR(50)          null,
+   DIA_ID               INT4                 null,
    HOR_HORA_INICIO      TIME                 null,
    HOR_HORA_FINAL       TIME                 null,
    HOR_ESTADO           CHAR                 null,
@@ -204,6 +215,11 @@ alter table FAB_HORARIO
       references FAB_PRODUCTO (PRO_ID)
       on delete restrict on update restrict;
 
+alter table FAB_HORARIO
+   add constraint FK_FAB_HORA_REFERENCE_FAB_DIAS foreign key (DIA_ID)
+      references FAB_DIAS (DIA_ID)
+      on delete restrict on update restrict;
+      
 alter table FAB_HORARIO_NODISPONIBLE
    add constraint FK_FAB_HORA_REFERENCE_FAB_PROD foreign key (PRO_ID)
       references FAB_PRODUCTO (PRO_ID)

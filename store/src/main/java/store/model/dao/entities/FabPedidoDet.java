@@ -16,7 +16,7 @@ public class FabPedidoDet implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="FAB_PEDIDO_DET_PEDDID_GENERATOR", sequenceName="SEQ_FAB_PEDIDO_DET")
+	@SequenceGenerator(name="FAB_PEDIDO_DET_PEDDID_GENERATOR", sequenceName="SEQ_FAB_PEDIDO_DET", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="FAB_PEDIDO_DET_PEDDID_GENERATOR")
 	@Column(name="pedd_id")
 	private Integer peddId;

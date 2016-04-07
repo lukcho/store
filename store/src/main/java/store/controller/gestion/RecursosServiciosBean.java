@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ import org.primefaces.model.UploadedFile;
 
 import store.model.dao.entities.FabCatalogo;
 import store.model.dao.entities.FabCatalogoitem;
+import store.model.dao.entities.FabDia;
+import store.model.dao.entities.FabHorario;
 import store.model.dao.entities.FabProducto;
 import store.model.dao.entities.FabProductoFoto;
 import store.model.generic.Funciones;
@@ -35,11 +38,10 @@ import store.model.manager.ManagerCatalogos;
 import store.model.manager.ManagerProductosServicios;
 import store.model.generic.Mensaje;
 
-
 @SessionScoped
 @ManagedBean
-public class RecursosServiciosBean implements Serializable{
-	
+public class RecursosServiciosBean implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@EJB
@@ -47,15 +49,15 @@ public class RecursosServiciosBean implements Serializable{
 	@EJB
 	private ManagerCatalogos managercat;
 
-	//PRODUCTOS Y SERVICIOS
+	// PRODUCTOS Y SERVICIOS
 	private String prodser_id;
-	private Integer cat_id;//para la seleccion de categoria
-	private Integer cati_id;//para la seleccion de categoria
-	private Integer cati_idhijo;//para la seleccion de categoriahijo
+	private Integer cat_id;// para la seleccion de categoria
+	private Integer cati_id;// para la seleccion de categoria
+	private Integer cati_idhijo;// para la seleccion de categoriahijo
 	private String categoria;
 	private String categoriaitem;
 	private String pro_cod_barras;
-	private String pro_tipo;//servicio o producto
+	private String pro_tipo;// servicio o producto
 	private String pro_nombre;
 	private String pro_descripcion;
 	private String pro_costo;
@@ -63,51 +65,118 @@ public class RecursosServiciosBean implements Serializable{
 	private String pro_stock;
 	private String pro_estado;
 	private String pro_estado_funcional;
-	
+
 	private boolean mostrarpro_id;
 	private boolean edicion;
 	private boolean ediciontipo;
 	private boolean verhorario;
 
-	//fabprodfoto imagenes
+	// fabprodfoto imagenes
 	private String imagen;
 	private UploadedFile file;
 	private String g;
 	private boolean imagenprod;
-	
-	private FabProducto prodelsita; 
-	private FabProductoFoto prodelsitafot; 
 
-	
+	private FabProducto prodelsita;
+	private FabProductoFoto prodelsitafot;
+	private FabHorario horario;
+
 	private List<FabProducto> listaProducto;
 	private List<FabProductoFoto> listaProductofoto;
+	private List<FabHorario> listaHorario;
+
+	// horario
+
+	private Date hora_inicio;
+	private Date hora_fin;
+	private Integer dia_ser;
+	private Time horainiciotiemp;
+	private Time horafintiemp; 
 	
-	
-	//horario 
-	
-	
-	
-	
-	public RecursosServiciosBean(){	
+	public RecursosServiciosBean() {
 	}
-		
+
 	@PostConstruct
 	public void ini() {
-		imagen="300.jpg";
-		pro_stock=null;
-		pro_estado_funcional="A";
-		cat_id=0;
-		pro_costo=null;
-		pro_precio=null;
+		imagen = "300.jpg";
+		pro_stock = null;
+		pro_estado_funcional = "A";
+		cat_id = 0;
+		dia_ser = 0;
+		pro_costo = null;
+		pro_precio = null;
 		edicion = false;
 		ediciontipo = false;
-		imagenprod=false;
-		verhorario=false;
-		mostrarpro_id=false;
+		imagenprod = false;
+		verhorario = false;
+		mostrarpro_id = false;
+		hora_inicio=null;
+		hora_fin=null;
 		listaProducto = managerprod.findAllProductos();
-		listaProductofoto= new ArrayList<FabProductoFoto>();
+		listaProductofoto = new ArrayList<FabProductoFoto>();
+		listaHorario = new ArrayList<FabHorario>();
 	}
 	
+	public Time getHorainiciotiemp() {
+		return horainiciotiemp;
+	}
+
+	public void setHorainiciotiemp(Time horainiciotiemp) {
+		this.horainiciotiemp = horainiciotiemp;
+	}
+
+	public Time getHorafintiemp() {
+		return horafintiemp;
+	}
+
+	public void setHorafintiemp(Time horafintiemp) {
+		this.horafintiemp = horafintiemp;
+	}
+
+	public Date getHora_inicio() {
+		return hora_inicio;
+	}
+
+	public void setHora_inicio(Date hora_inicio) {
+		this.hora_inicio = hora_inicio;
+	}
+
+	public Date getHora_fin() {
+		return hora_fin;
+	}
+
+	public void setHora_fin(Date hora_fin) {
+		this.hora_fin = hora_fin;
+	}
+
+	public void setHora_fin(Time hora_fin) {
+		this.hora_fin = hora_fin;
+	}
+
+	public List<FabHorario> getListaHorario() {
+		return listaHorario;
+	}
+
+	public void setListaHorario(List<FabHorario> listaHorario) {
+		this.listaHorario = listaHorario;
+	}
+
+	public Integer getDia_ser() {
+		return dia_ser;
+	}
+
+	public void setDia_ser(Integer dia_ser) {
+		this.dia_ser = dia_ser;
+	}
+
+	public FabHorario getHorario() {
+		return horario;
+	}
+
+	public void setHorario(FabHorario horario) {
+		this.horario = horario;
+	}
+
 	public FabProductoFoto getProdelsitafot() {
 		return prodelsitafot;
 	}
@@ -171,7 +240,7 @@ public class RecursosServiciosBean implements Serializable{
 	public void setEdicion(boolean edicion) {
 		this.edicion = edicion;
 	}
-	
+
 	public String getProdser_id() {
 		return prodser_id;
 	}
@@ -187,7 +256,7 @@ public class RecursosServiciosBean implements Serializable{
 	public void setCat_id(Integer cat_id) {
 		this.cat_id = cat_id;
 	}
-	
+
 	public Integer getCati_id() {
 		return cati_id;
 	}
@@ -299,12 +368,11 @@ public class RecursosServiciosBean implements Serializable{
 	public void setFile(UploadedFile file) {
 		this.file = file;
 	}
-	
+
 	public List<FabProducto> getListaProducto() {
 		return listaProducto;
 	}
-	
-	
+
 	public void setListaProducto(List<FabProducto> listaProducto) {
 		this.listaProducto = listaProducto;
 	}
@@ -318,7 +386,8 @@ public class RecursosServiciosBean implements Serializable{
 	}
 
 	/**
-	 * accion para invocar el manager y crear producto
+	 * accion para invocar el manager y crear producto o editar el producto
+	 * 
 	 * @param pro_id
 	 * @param prodfoto_id
 	 * @param pro_nombre
@@ -330,48 +399,52 @@ public class RecursosServiciosBean implements Serializable{
 	 * @param pro_estado_fun
 	 * @throws Exception
 	 */
-	public String crearProducto(){
+	public String crearProducto() {
 		String r = "";
 		try {
-			BigDecimal procosto = new BigDecimal(pro_costo.replace(",", ".")); 
-			BigDecimal proprecio =	new BigDecimal(pro_precio.replace(",", "."));
-			Integer prostock =  Integer.parseInt(pro_stock);
+			BigDecimal procosto = new BigDecimal(pro_costo.replace(",", "."));
+			BigDecimal proprecio = new BigDecimal(pro_precio.replace(",", "."));
+			Integer prostock = Integer.parseInt(pro_stock);
 			if (edicion) {
-				managerprod.editarproducto(prodser_id, pro_nombre, pro_cod_barras,
-								pro_tipo, pro_descripcion, procosto,
-								proprecio, prostock, pro_estado,
-								pro_estado_funcional);
+				managerprod.editarproducto(prodser_id, pro_nombre,
+						pro_cod_barras, pro_tipo, pro_descripcion, procosto,
+						proprecio, prostock, pro_estado, pro_estado_funcional);
 				Mensaje.crearMensajeINFO("Actualizado - Modificado");
-				if(pro_tipo.equals("S"))
-				{
-				verhorario = true;
-				}else 
-					verhorario=false;
+				if (pro_tipo.equals("S")) {
+					verhorario = true;
+				} else
+					verhorario = false;
 				asignarprofoto();
 			} else {
-					if(!averiguarproductoid(prodser_id)){
-						managerprod.insertarProducto(prodser_id, pro_nombre,
-								pro_cod_barras, pro_tipo, pro_descripcion, procosto,
-								proprecio, prostock);
-						Mensaje.crearMensajeINFO("Registrado - Creado");
-						imagenprod = false;
-						if(pro_tipo.equals("S"))
-						{
+				if (!averiguarproductoid(prodser_id)) {
+					managerprod.insertarProducto(prodser_id, pro_nombre,
+							pro_cod_barras, pro_tipo, pro_descripcion,
+							procosto, proprecio, prostock);
+					Mensaje.crearMensajeINFO("Registrado - Creado");
+					imagenprod = false;
+					if (pro_tipo.equals("S")) {
 						verhorario = true;
-						}else
-							verhorario=false;
-						asignarprofoto();
-					}
+					} else
+						verhorario = false;
+					asignarprofoto();
+				}
 			}
-			} catch (Exception e) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error al crear producto",null));
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,e.getMessage(),null));
-			};
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Error al crear producto", null));
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
+							.getMessage(), null));
+		}
 		return r;
 	}
 
 	/**
 	 * accion para cargar los datos en el formulario
+	 * 
 	 * @param pro_id
 	 * @param prodfoto_id
 	 * @param pro_nombre
@@ -383,65 +456,81 @@ public class RecursosServiciosBean implements Serializable{
 	 * @param pro_estado_fun
 	 * @throws Exception
 	 */
-		public String cargarProducto(FabProducto prod){
-			try {
-				prodser_id= prod.getProId();
-				pro_descripcion=prod.getProDescripcion();
-				pro_nombre=prod.getProNombre();
-				pro_cod_barras=prod.getProCodigoBarras();
-				pro_tipo=prod.getProTipo();
-				pro_descripcion=prod.getProDescripcion();
-				pro_costo=prod.getProCosto().toString();
-				pro_precio=prod.getProPrecio().toString();
-				pro_stock=prod.getProStock().toString();
-				pro_estado=prod.getProEstado();
-				pro_estado_funcional=prod.getProEstadoFuncional();
-				FabCatalogo fab = managercat.CatalogoByID(prod.getFabCatalogoitem().getFabCatalogo().getCatId());
-				FabCatalogoitem fabcati = managercat.CatalogoItemsByID(prod.getFabCatalogoitem().getCatiIdPadre());
-				cat_id= fab.getCatId();
-				cati_id = fabcati.getCatiId();
-				cati_idhijo = prod.getFabCatalogoitem().getCatiId();
-				asignarCatItem();
-				edicion = true;
-				imagenprod=false;
-				mostrarpro_id=true;
-				if(pro_tipo.equals("P"))
-				{
-				ediciontipo=false;	
-				verhorario=false;
-				}
-				else if(pro_tipo.equals("S"))
-				{
-				ediciontipo=true;
-				verhorario=true;
-				}
-				getListaProductofoto().clear();
-				getListaProductofoto().addAll(managerprod.productoFotoByNombre(pro_nombre));
-				return "nproducto?faces-redirect=true";
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
+	public String cargarProducto(FabProducto prod) {
+		try {
+			prodser_id = prod.getProId();
+			pro_descripcion = prod.getProDescripcion();
+			pro_nombre = prod.getProNombre();
+			pro_cod_barras = prod.getProCodigoBarras();
+			pro_tipo = prod.getProTipo();
+			pro_descripcion = prod.getProDescripcion();
+			pro_costo = prod.getProCosto().toString();
+			pro_precio = prod.getProPrecio().toString();
+			pro_stock = prod.getProStock().toString();
+			pro_estado = prod.getProEstado();
+			pro_estado_funcional = prod.getProEstadoFuncional();
+			FabCatalogo fab = managercat.CatalogoByID(prod.getFabCatalogoitem()
+					.getFabCatalogo().getCatId());
+			FabCatalogoitem fabcati = managercat.CatalogoItemsByID(prod
+					.getFabCatalogoitem().getCatiIdPadre());
+			cat_id = fab.getCatId();
+			cati_id = fabcati.getCatiId();
+			cati_idhijo = prod.getFabCatalogoitem().getCatiId();
+			asignarCatItem();
+			edicion = true;
+			imagenprod = false;
+			mostrarpro_id = true;
+			if (pro_tipo.equals("P")) {
+				ediciontipo = false;
+				verhorario = false;
+			} else if (pro_tipo.equals("S")) {
+				ediciontipo = true;
+				verhorario = true;
 			}
-			return "";
+			getListaProductofoto().clear();
+			getListaProductofoto().addAll(
+					managerprod.productoFotoByNombre(pro_nombre));
+			return "nproducto?faces-redirect=true";
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
-	
+		return "";
+	}
+
+	public String verhorariodePro() {
+		try {
+			getListaHorario().clear();
+			getListaHorario().addAll(
+					managerprod.horarioByProdId(prodser_id));
+			return "horariodisponible?faces-redirect=true";
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return "";
+	}
+
 	/**
 	 * activar y desactivar estado producto
+	 * 
 	 * @param pro_id
 	 * @throws Exception
 	 */
-	public String cambiarEstado(){
+	public String cambiarEstado() {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
-	        context.addMessage(null, new FacesMessage("INFORMACION",managerprod.cambioEstadoprod(getProdelsita().getProId())));
-	        getListaProducto().clear();
+			context.addMessage(null, new FacesMessage("INFORMACION",
+					managerprod.cambioEstadoprod(getProdelsita().getProId())));
+			getListaProducto().clear();
 			getListaProducto().addAll(managerprod.findAllProductos());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 		return "";
 	}
-	
+
 	public void cambiarEstadoprod(FabProducto prod) {
 		setProdelsita(prod);
 		RequestContext.getCurrentInstance().execute("PF('ce').show();");
@@ -449,7 +538,60 @@ public class RecursosServiciosBean implements Serializable{
 
 	}
 
-	// prodfoto
+	// PRODUCTOFOTO
+
+	/**
+	 * guardar una imagen fotoproducto
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String guardarimagen() {
+		try {
+			asignarprofoto();
+			managerprod.insertarproducto_foto(pro_nombre, imagen);
+			getListaProductofoto().clear();
+			getListaProductofoto().addAll(
+					managerprod.productoFotoByNombre(pro_nombre));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
+
+	/**
+	 * metodo para asignar el producto al productofoto
+	 * 
+	 */
+	public String asignarprofoto() {
+		managerprod.asignarprod(prodser_id);
+		return "";
+	}
+
+	/**
+	 * metodo para conocer el prodid si esta usado
+	 * 
+	 */
+	public boolean averiguarproductoid(String proserid) {
+		Integer t = 0;
+		boolean r = false;
+		List<FabProducto> pro = managerprod.findAllProductos();
+		for (FabProducto y : pro) {
+			if (y.getProId().equals(prodser_id)) {
+				System.out.println("si entra1");
+				t = 1;
+				r = true;
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								"El codigo del producto existe.", null));
+			}
+		}
+		if (t == 0) {
+			r = false;
+		}
+		return r;
+	}
 
 	/**
 	 * activar y desactivar estado fotoproducto
@@ -516,134 +658,6 @@ public class RecursosServiciosBean implements Serializable{
 		setProdelsitafot(prod);
 		RequestContext.getCurrentInstance().execute("PF('ef').show();");
 		System.out.println("holi");
-		
-	}
-
-	/**
-	 * guardar una imagen fotoproducto
-	 * @param pro_id
-	 * @throws Exception
-	 */
-	public String guardarimagen() {
-		try {
-			asignarprofoto();
-			managerprod.insertarproducto_foto(pro_nombre, imagen);
-			getListaProductofoto().clear();
-			getListaProductofoto().addAll(managerprod.productoFotoByNombre(pro_nombre));
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		return "";
-	}
-	
-	/**
-	 * metodo para asignar el producto al productofoto
-	 * 
-	 */
-	public String asignarprofoto() {
-	    managerprod.asignarprod(prodser_id);
-		return "";
-	}
-	
-	/**
-	 * metodo para conocer el prodid si esta usado
-	 * 
-	 */
-    public boolean averiguarproductoid(String proserid){
- 		Integer t=0;
- 		boolean r=false;
- 		List<FabProducto> pro = managerprod.findAllProductos();
- 		for (FabProducto y :pro){
- 			if (y.getProId().equals(prodser_id)){
- 				System.out.println("si entra1");	  						  							
- 				t=1;
- 				r= true;
- 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"El codigo del producto existe.",null));
- 			}
- 		}
- 		if (t==0){ 			
- 			r= false;
- 		}
-		return r; 		
- 	}
-	
-				
-	//CATALOGO y CATALOGO ITEMS
-	
-	/**
-	 * metodo para mostrar los Catalogositems en productos
-	 *  
-	 */
-	public List<SelectItem> getListaCategoria(){
-		List<SelectItem> listadoSI=new ArrayList<SelectItem>();
-		if(cat_id!=0){
-			listadoSI.add(new SelectItem(0,"Seleccionar"));
-			for(FabCatalogoitem t : managercat.findCatalogoItemsByCatalogo(cat_id)){
-				listadoSI.add(new SelectItem(t.getCatiId(),t.getCatiNombre()));
-			}
-		}
-		return listadoSI;
-	}
-	
-	/**
-	 * metodo para mostrar los Catalogositems en productos
-	 * 
-	 */
-	public List<SelectItem> getListaCatalogo(){
-		List<SelectItem> listadoSI=new ArrayList<SelectItem>();
-		listadoSI.add(new SelectItem(0,"Seleccionar"));
-		for(FabCatalogo t : managercat.findAllCatalogos()){
-			listadoSI.add(new SelectItem(t.getCatId(),t.getCatNombre()));
-		}
-		return listadoSI;
-	}
-	
-	/**
-	 * metodo para mostrar los Catalogositems en productos
-	 *  
-	 */
-	public List<SelectItem> getListaCatalogoitem(){
-		List<SelectItem> listadoSI=new ArrayList<SelectItem>();
-			listadoSI.add(new SelectItem(0,"Seleccionar"));
-			for(FabCatalogoitem t : managercat.findCatalogoItemsByCatalogo(cat_id)){
-				listadoSI.add(new SelectItem(t.getCatiId(),t.getCatiNombre()));
-			}
-		return listadoSI;
-	}
-	
-	/**
-	 * metodo para mostrar los Catalogositemsitems en productos
-	 *  
-	 */
-	public List<SelectItem> getListaCatalogoitemitems(){
-		List<SelectItem> listadoSI=new ArrayList<SelectItem>();
-		if(cat_id!= 0){
-			listadoSI.add(new SelectItem(0,"Seleccionar"));
-			for(FabCatalogoitem t : managercat.findCatalogoItemshijosByCatalogo(cati_id)){
-				listadoSI.add(new SelectItem(t.getCatiId(),t.getCatiNombre()));
-			}
-		}
-		return listadoSI;
-	}
-	
-	
-	//CATALOGO CATALOGOTITEM
-	/**
-	 * metodo para asignar el catalogo al producto
-	 * 
-	 */
-	public String asignarCat() {
-		managercat.asignarcatalogo(cat_id);
-		return "";
-	}
-	
-	/**
-	 * 	metodo para asignar el catalogoitem al producto
-	 * 
-	 */
-	public String asignarCatItem() {
-	    managerprod.asignarcati(cati_idhijo);
-		return "";
 	}
 
 	/**
@@ -655,9 +669,9 @@ public class RecursosServiciosBean implements Serializable{
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
 		System.out.println(pro_nombre);
-		if (pro_nombre != null && pro_nombre !="") {
+		if (pro_nombre != null && pro_nombre != "") {
 			asignarNombreImagencargado(pro_nombre);
-			int i = listaProductofoto.size()+1;
+			int i = listaProductofoto.size() + 1;
 			System.out.println(i);
 			if (i < 6) {
 				if (file != null) {
@@ -712,26 +726,32 @@ public class RecursosServiciosBean implements Serializable{
 									"Error:",
 									"no se pudo seleccionar la imagen"));
 				}
-			}else
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Error:",
-							"Sólo puede subir 5 imagenes"));
-		}else
-		FacesContext.getCurrentInstance().addMessage(
-				null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Error:",
-						"debe crear o guardar primero un producto o servicio"));
+			} else
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "Error:",
+								"Sólo puede subir 5 imagenes"));
+		} else
+			FacesContext
+					.getCurrentInstance()
+					.addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Error:",
+									"debe crear o guardar primero un producto o servicio"));
 	}
 
 	// metodo para poner el nombre a la imagen
 	public void asignarNombreImagen() {
 		if (getProdser_id().trim().isEmpty()) {
 			System.out.println("Vacio");
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Error:",
-							"debe crear o guardar primero un producto o servicio"));
+			FacesContext
+					.getCurrentInstance()
+					.addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Error:",
+									"debe crear o guardar primero un producto o servicio"));
 		} else {
 			DateFormat dateFormat = new SimpleDateFormat("_ddMMyyyyHHmmss");
 			g = "img_" + getProdser_id() + dateFormat.format(new Date())
@@ -739,22 +759,24 @@ public class RecursosServiciosBean implements Serializable{
 			System.out.println(g);
 		}
 	}
-		
+
 	// metodo para poner el nombre a la imagen
-		public void asignarNombreImagencargado(String pro_nombre) {
-			if (getProdser_id().trim().isEmpty()) {
-				System.out.println("Vacio");
-				FacesContext.getCurrentInstance().addMessage(
-						null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "Error:",
-								"debe crear o guardar primero un producto o servicio"));
-			} else {
-				DateFormat dateFormat = new SimpleDateFormat("_ddMMyyyyHHmmss");
-				g = "img_" + pro_nombre + dateFormat.format(new Date())
-						+ ".jpg";
-				System.out.println(g);
-			}
+	public void asignarNombreImagencargado(String pro_nombre) {
+		if (getProdser_id().trim().isEmpty()) {
+			System.out.println("Vacio");
+			FacesContext
+					.getCurrentInstance()
+					.addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Error:",
+									"debe crear o guardar primero un producto o servicio"));
+		} else {
+			DateFormat dateFormat = new SimpleDateFormat("_ddMMyyyyHHmmss");
+			g = "img_" + pro_nombre + dateFormat.format(new Date()) + ".jpg";
+			System.out.println(g);
 		}
+	}
 
 	// metodo para poner el nombre a la imagen
 	public void nombreImagen(String n) {
@@ -767,28 +789,100 @@ public class RecursosServiciosBean implements Serializable{
 		System.out.println(g);
 	}
 
+	// CATALOGO y CATALOGO ITEMS
+
+	/**
+	 * metodo para mostrar los Catalogositems en productos
+	 * 
+	 */
+	public List<SelectItem> getListaCategoria() {
+		List<SelectItem> listadoSI = new ArrayList<SelectItem>();
+		if (cat_id != 0) {
+			listadoSI.add(new SelectItem(0, "Seleccionar"));
+			for (FabCatalogoitem t : managercat
+					.findCatalogoItemsByCatalogo(cat_id)) {
+				listadoSI.add(new SelectItem(t.getCatiId(), t.getCatiNombre()));
+			}
+		}
+		return listadoSI;
+	}
+
+	/**
+	 * metodo para mostrar los Catalogositems en productos
+	 * 
+	 */
+	public List<SelectItem> getListaCatalogo() {
+		List<SelectItem> listadoSI = new ArrayList<SelectItem>();
+		listadoSI.add(new SelectItem(0, "Seleccionar"));
+		for (FabCatalogo t : managercat.findAllCatalogos()) {
+			listadoSI.add(new SelectItem(t.getCatId(), t.getCatNombre()));
+		}
+		return listadoSI;
+	}
+
+	/**
+	 * metodo para mostrar los Catalogositems en productos
+	 * 
+	 */
+	public List<SelectItem> getListaCatalogoitem() {
+		List<SelectItem> listadoSI = new ArrayList<SelectItem>();
+		listadoSI.add(new SelectItem(0, "Seleccionar"));
+		for (FabCatalogoitem t : managercat.findCatalogoItemsByCatalogo(cat_id)) {
+			listadoSI.add(new SelectItem(t.getCatiId(), t.getCatiNombre()));
+		}
+		return listadoSI;
+	}
+
+	/**
+	 * metodo para mostrar los Catalogositemsitems en productos
+	 * 
+	 */
+	public List<SelectItem> getListaCatalogoitemitems() {
+		List<SelectItem> listadoSI = new ArrayList<SelectItem>();
+		if (cat_id != 0) {
+			listadoSI.add(new SelectItem(0, "Seleccionar"));
+			for (FabCatalogoitem t : managercat
+					.findCatalogoItemshijosByCatalogo(cati_id)) {
+				listadoSI.add(new SelectItem(t.getCatiId(), t.getCatiNombre()));
+			}
+		}
+		return listadoSI;
+	}
+
+	/**
+	 * metodo para asignar el catalogo al producto
+	 * 
+	 */
+	public String asignarCat() {
+		managercat.asignarcatalogo(cat_id);
+		return "";
+	}
+
+	/**
+	 * metodo para asignar el catalogoitem al producto
+	 * 
+	 */
+	public String asignarCatItem() {
+		managerprod.asignarcati(cati_idhijo);
+		return "";
+	}
+
 	/**
 	 * Redirecciona a la pagina de creacion de sitios
 	 * 
 	 * @return
 	 */
 	public String nuevoProducto() {
-		verhorario=false;
-		mostrarpro_id=false;
+		verhorario = false;
+		mostrarpro_id = false;
 		edicion = false;
-		imagenprod=true;
+		imagenprod = true;
 		listaProductofoto.clear();
 		return "nproducto?faces-redirect=true";
 	}
-	
-	//horarios
-	
-	
-	
-	
-	
-	//ESTADOS
-	
+
+	// horarios ESTADOS
+
 	/**
 	 * Lista de estados
 	 * 
@@ -803,7 +897,7 @@ public class RecursosServiciosBean implements Serializable{
 						+ Funciones.valorEstadoInactivo));
 		return lista;
 	}
-	
+
 	/**
 	 * Lista de tipoprodser
 	 * 
@@ -811,14 +905,15 @@ public class RecursosServiciosBean implements Serializable{
 	 */
 	public List<SelectItem> getlistTipo() {
 		List<SelectItem> lista = new ArrayList<SelectItem>();
-		lista.add(new SelectItem(Funciones.estadoProducto, Funciones.estadoProducto
-				+ " : " + Funciones.valorEstadoProducto));
+		lista.add(new SelectItem(Funciones.estadoProducto,
+				Funciones.estadoProducto + " : "
+						+ Funciones.valorEstadoProducto));
 		lista.add(new SelectItem(Funciones.estadoServicio,
 				Funciones.estadoServicio + " : "
 						+ Funciones.valorEstadoServicio));
 		return lista;
 	}
-	
+
 	/**
 	 * Lista de estadosfuncionales
 	 * 
@@ -834,44 +929,203 @@ public class RecursosServiciosBean implements Serializable{
 		return lista;
 	}
 
+	/**
+	 * Metodo para cambiar el estado
+	 * 
+	 * @return lista de items de estadosfuncionales
+	 */
 	public void tipoest() {
 		if (getPro_tipo().equals("S")) {
-			cat_id=2;
+			cat_id = 2;
 			getListaCategoria();
 			setPro_stock("1");
-			ediciontipo=true;
-			verhorario=false;
+			ediciontipo = true;
+			verhorario = false;
 		} else {
-			cat_id=1;
+			cat_id = 1;
 			getListaCategoria();
-			ediciontipo=false;
-			verhorario=true;
+			ediciontipo = false;
+			verhorario = true;
 		}
 	}
-	
+
+	/**
+	 * Metodo para averiguar si esta el nombre vacio
+	 * 
+	 * @return lista de items de estadosfuncionales
+	 */
 	public void imagenprod() {
 		if (getProdser_id().equals("")) {
-			ediciontipo=false;
+			ediciontipo = false;
 		} else {
-			ediciontipo=true;
+			ediciontipo = true;
 		}
 	}
+
+	// Dias
+	/**
+	 * crear un horario del producto
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String crearhorario() {
+		try {
+			managerprod.asignarprod(prodser_id);
+			setHorainiciotiemp((this.fechaAtiempo(hora_inicio)));
+			setHorafintiemp((this.fechaAtiempo(hora_fin)));
+			if(horafintiemp.getTime()<=horainiciotiemp.getTime()){
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Error..!!!",
+						"Verifique si horario "));
+			}else{
+			managerprod.insertarhorario(horainiciotiemp, horafintiemp);
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Registrado..!!!",
+					"Horario Creado "));
+			getListaHorario().clear();
+			getListaHorario().addAll(
+					managerprod.horarioByProdId(prodser_id));
+			hora_inicio=null;
+			hora_fin=null;
+			horainiciotiemp=null;
+			horafintiemp=null;
+			dia_ser=0;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
+
 	
-	//------ traslados--------
+	/**
+	 * JAVA.DATE TO SQL.TIME
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("deprecation")
+	public Time fechaAtiempo(Date fecha) {
+		DateFormat dateFormatH = new SimpleDateFormat("HH:mm");
+		String hora = dateFormatH.format(fecha).toString();
+		String[] array = hora.split(":");
+		Time resp = new Time(Integer.parseInt(array[0]),
+				Integer.parseInt(array[1]), 00);
+		return resp;
+	}
 	
+	
+	/**
+	 * Metodo para averiguar si esta el nombre vacio
+	 * 
+	 * @return lista de items de estadosfuncionales
+	 */
+	public List<SelectItem> getListaDia() {
+		List<SelectItem> listadoSI = new ArrayList<SelectItem>();
+		List<FabDia> tipo = managerprod.findAllDias();
+		for (FabDia t : tipo) {
+			SelectItem item = new SelectItem(t.getDiaId(), t.getDiaNombre());
+			listadoSI.add(item);
+		}
+		return listadoSI;
+	}
+	
+
+	/**
+	 * metodo para asignar el producto al productofoto
+	 * 
+	 */
+	public String asignardia() {
+		managerprod.asignardia(dia_ser);
+		return "";
+	}
+
+	/**
+	 * eliminar un fotoproducto abriendo el dialogo
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public void eliminarHorario(FabHorario hor) {
+		setHorario(hor);
+		RequestContext.getCurrentInstance().execute("PF('ef').show();");
+		System.out.println("holi");
+	}
+	
+	
+	/**
+	 * eliminar un horario
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String eliminarhorario() {
+		try {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("INFORMACION","Se ha eliminado una imagen"));
+			managerprod.eliminarHorario(getHorario().getHorId());
+			getListaHorario().clear();
+			getListaHorario().addAll(
+					managerprod.horarioByProdId(getHorario().getFabProducto()
+							.getProId()));
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
+	
+	/**
+	 * eliminar un fotoproducto abriendo el dialogo
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public void cambiarEstadohorario(FabHorario hor) {
+		setHorario(hor);
+		RequestContext.getCurrentInstance().execute("PF('ce').show();");
+		System.out.println("holi");
+
+	}
+
+	/**
+	 * activar y desactivar estado horario
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String cambiarEstadoHorario() {
+		try {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("INFORMACION",
+					managerprod.cambioEstadoHorario(getHorario().getHorId())));
+			getListaHorario().clear();
+			getListaHorario().addAll(
+					managerprod.horarioByProdId(getHorario().getFabProducto()
+							.getProId()));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
+
+	// ------ traslados--------
+
 	/**
 	 * limpia la informacion de horario
 	 * 
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public String volverproducto() throws Exception {
 		// limpiar datos
 		getListaProductofoto().clear();
-		getListaProductofoto().addAll(managerprod.productoFotoByNombre(pro_nombre));
+		getListaProductofoto().addAll(
+				managerprod.productoFotoByNombre(pro_nombre));
 		return "nproducto?faces-redirect=true";
 	}
-	
+
 	/**
 	 * limpia la informacion
 	 * 
@@ -892,26 +1146,23 @@ public class RecursosServiciosBean implements Serializable{
 		pro_estado_funcional = "";
 		imagen = "300.jpg";
 		edicion = false;
-		ediciontipo=false;
-		verhorario=false;
+		ediciontipo = false;
+		verhorario = false;
 		getListaProducto().clear();
 		getListaProducto().addAll(managerprod.findAllProductos());
 		return "productos?faces-redirect=true";
 	}
-	
+
 	/**
 	 * Cancela la accion de irHorario
 	 * 
 	 * @return
 	 */
 	public String irHorario() {
-		String r="";
-		if(pro_tipo.equals("S"))
-		{
-		r= "horariodisponible?faces-redirect=true";
-		}
-		else
-		{
+		String r = "";
+		if (pro_tipo.equals("S")) {
+			r = "horariodisponible?faces-redirect=true";
+		} else {
 			Mensaje.crearMensajeINFO("El tipo producto no contiene horario");
 		}
 		return r;

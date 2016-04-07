@@ -21,9 +21,6 @@ public class FabHorario implements Serializable {
 	@Column(name="hor_id")
 	private Integer horId;
 
-	@Column(name="hor_dia", length=50)
-	private String horDia;
-
 	@Column(name="hor_estado", columnDefinition="bpchar", length=1)
 	private String horEstado;
 
@@ -38,6 +35,11 @@ public class FabHorario implements Serializable {
 	@JoinColumn(name="pro_id")
 	private FabProducto fabProducto;
 
+	//bi-directional many-to-one association to FabDia
+	@ManyToOne
+	@JoinColumn(name="dia_id")
+	private FabDia fabDia;
+
 	public FabHorario() {
 	}
 
@@ -47,14 +49,6 @@ public class FabHorario implements Serializable {
 
 	public void setHorId(Integer horId) {
 		this.horId = horId;
-	}
-
-	public String getHorDia() {
-		return this.horDia;
-	}
-
-	public void setHorDia(String horDia) {
-		this.horDia = horDia;
 	}
 
 	public String getHorEstado() {
@@ -87,6 +81,14 @@ public class FabHorario implements Serializable {
 
 	public void setFabProducto(FabProducto fabProducto) {
 		this.fabProducto = fabProducto;
+	}
+
+	public FabDia getFabDia() {
+		return this.fabDia;
+	}
+
+	public void setFabDia(FabDia fabDia) {
+		this.fabDia = fabDia;
 	}
 
 }
