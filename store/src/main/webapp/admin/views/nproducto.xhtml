@@ -14,7 +14,7 @@
 	<ui:define name="contenido">
 		<br />
 		<h:form id="frm">
-			<p:growl id="messages" showDetail="true" />
+			<p:growl id="messages" showDetail="false" />
 			<b:panel title="Registro de Productos o Servicios" look="primary">
 				<b:row>
 					<b:column span="2">
@@ -82,7 +82,7 @@
 					<b:column span="4" style="margin-bottom:10px">
 						<h:panelGroup>
 							<h:selectOneMenu id="trackseleccionar2" required="true"
-								styleClass="form-control"
+								styleClass="form-control" requiredMessage="Debe seleccionar la categoria primero"
 								value="#{recursosServiciosBean.cati_idhijo}">
 								<f:selectItems
 									value="#{recursosServiciosBean.listaCatalogoitemitems}" />
@@ -150,11 +150,20 @@
 				</b:row>
 				<b:row>
 					<b:column span="2">
-						<h:outputLabel value="Ver Horario: " />
+						<h:outputLabel value="Ver Horario Disponible: "  rendered="#{recursosServiciosBean.verhorario}"/>
 					</b:column>
 					<b:column span="4">
 						<b:navCommandLink id="horario" value="Ver Horario"
 							action="#{recursosServiciosBean.verhorariodePro}"
+							rendered="#{recursosServiciosBean.verhorario}"
+							iconAwesome="sliders"></b:navCommandLink>
+					</b:column>
+					<b:column span="2">
+						<h:outputLabel value="Ver Horario No Disponible: "  rendered="#{recursosServiciosBean.verhorario}"/>
+					</b:column>
+					<b:column span="4">
+						<b:navCommandLink id="horarionodi" value="Ver Horario No Disponible"
+							action="#{recursosServiciosBean.verhorariodeProNoDis}"
 							rendered="#{recursosServiciosBean.verhorario}"
 							iconAwesome="sliders"></b:navCommandLink>
 					</b:column>
@@ -187,7 +196,7 @@
 				<b:row>
 					<b:column span="5">
 						<p:commandButton value="Guardar" styleClass="btn btn-info" style="padding:7px;"
-							onclick="PF('gu').show();"
+							actionListener="#{recursosServiciosBean.abrirDialog()}" disabled="#{recursosServiciosBean.guardarin}"
 							update="frm messages" >
 						</p:commandButton>&nbsp;&nbsp;&nbsp;
 					</b:column>

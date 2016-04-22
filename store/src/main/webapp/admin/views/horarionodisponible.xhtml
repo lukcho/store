@@ -9,13 +9,13 @@
 
 <ui:composition template="template.xhtml">
 	<ui:define name="titulo">
-            Servicio Horario Disponible
+            Servicio Horario No Disponible
         </ui:define>
 	<ui:define name="contenido">
 		<br />
 		<h:form id="frm">
 			<p:growl id="messages" showDetail="true" />
-			<b:panel title="Registro de Horarios Disponibles del Servicio" look="primary">
+			<b:panel title="Registro de Horarios no Disponibles del Servicio" look="primary">
 				<b:row style="margin-bottom:10px;font-style: oblique;">
 					<b:column span="2">
 						<h:outputLabel value="Codigo Prod. " style="color: #317eac;" />
@@ -39,30 +39,25 @@
 					<b:column span="2">
 						<h:outputLabel value="Seleccione el día:* " />
 					</b:column>
-					<b:column span="2">
-						<h:panelGroup>
-							<p:selectOneMenu id="trackseleccionar" required="true" styleClass="t" value="#{recursosServiciosBean.dia_ser}"
-								requiredMessage="Requerido día">
-								<f:selectItem itemLabel="Selección Día" itemValue="" />
-								<f:selectItems value="#{recursosServiciosBean.listaDia}" />
-								<p:ajax listener="#{recursosServiciosBean.asignardia()}">
-								</p:ajax>
-							</p:selectOneMenu>
-						</h:panelGroup>
+					<b:column span="3">
+						<p:calendar required="true" mindate="#{recursosServiciosBean.fecha}"
+							requiredMessage="Requerido Fecha" id="fechai" mode="popup"
+							value="#{recursosServiciosBean.dianodis}" pattern="yyyy/MM/dd" mask="true">
+						</p:calendar>
 					</b:column>
 					<b:column span="1" >
 						<h:outputLabel value="Hora Inicial:* " />&nbsp;&nbsp;&nbsp;
 					</b:column>
 					<b:column span="2">
 						<p:calendar id="horaini"
-							value="#{recursosServiciosBean.hora_inicio}" pattern="HH:mm"  required="true" requiredMessage="Requerido Hora Inicio"
+							value="#{recursosServiciosBean.hora_inicionodis}" pattern="HH:mm"  required="true" requiredMessage="Requerido Hora Inicio"
 							timeOnly="true" />
 					</b:column>
 					<b:column span="1" >
 						<h:outputLabel value="Hora Final*: " />&nbsp;&nbsp;&nbsp;
 					</b:column>
 					<b:column span="1">
-						<p:calendar id="horafin" value="#{recursosServiciosBean.hora_fin}"  required="true" requiredMessage="Requerido Hora Fin"
+						<p:calendar id="horafin" value="#{recursosServiciosBean.hora_finnodis}"  required="true" requiredMessage="Requerido Hora Fin"
 							pattern="HH:mm" timeOnly="true" />
 					</b:column>
 				</b:row>
@@ -80,21 +75,21 @@
 		</h:form>
 		<h:form id="frm1">
 			<p:messages closable="true"></p:messages>
-			<b:panel title="Listado de Horarios" look="primary">
-				<p:dataTable id="tbb" value="#{recursosServiciosBean.listaHorario}"
+			<b:panel title="Listado de Horarios No Disponibles" look="primary">
+				<p:dataTable id="tbb" value="#{recursosServiciosBean.listaHorarioNoDis}"
 					reflow="true" var="hor" rows="3" emptyMessage="Sin Datos"
 					paginator="true"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
 					<p:column headerText="OPCIONES" width="40">
 						<p:commandButton id="btnE" icon="ui-icon-close"
-							action="#{recursosServiciosBean.eliminarHorario(hor)}"
+							action="#{recursosServiciosBean.eliminarHorarioNoDis(hor)}"
 							update="frm1 tbb">
 							<p:tooltip id="toolTipTrack1" for="btnE"
 								value="Bot&oacute;n para borrar el horario" trackMouse="true" />
 						</p:commandButton>
 						&nbsp;&nbsp;&nbsp;
 						<p:commandButton id="trackcamb" icon="ui-icon-refresh"
-							action="#{recursosServiciosBean.cambiarEstadohorario(hor)}"
+							action="#{recursosServiciosBean.cambiarEstadohorarioNoDis(hor)}"
 							update="frm1 tbb">
 							<p:tooltip id="toolTipTrack2" for="trackcamb"
 								value="Bot&oacute;n para cambiar el estado del horario"
@@ -102,13 +97,13 @@
 						</p:commandButton>
 					</p:column>
 					<p:column headerText="Día" width="40">
-						<h:outputText value="#{hor.fabDia.diaNombre}"></h:outputText>
+						<h:outputText value="#{hor.hornodisDia}"></h:outputText>
 					</p:column>
 					<p:column headerText="Horario Inicio/Final" width="40">
-						<h:outputText value="#{hor.horHoraInicio} - #{hor.horHoraFinal}"></h:outputText>
+						<h:outputText value="#{hor.hornodisHinicial} - #{hor.hornodisHfinal}"></h:outputText>
 					</p:column>
 					<p:column headerText="ESTADO" width="30">
-						<h:outputText value="#{hor.horEstado}"></h:outputText>
+						<h:outputText value="#{hor.hornodisEstado}"></h:outputText>
 					</p:column>
 				</p:dataTable>
 				<b:row>
@@ -122,39 +117,39 @@
 			</b:panel>
 		</h:form>
 		<p:confirmDialog header="Confirmación"
-			message="Está seguro de guardar la información?" closable="false"
+			message="Est&aacute; seguro de guardar la informaci&oacute;n?" closable="false"
 			showEffect="fade" hideEffect="explode" widgetVar="gu">
 			<h:form>
 				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
 					icon="ui-icon-check"
-					action="#{recursosServiciosBean.crearhorarioDisponible()}"
+					action="#{recursosServiciosBean.crearhorarioNoDisponible()}"
 					oncomplete="PF('gu').hide();" update="frm :frm1:tbb" />
 				<p:commandButton value="No" type="button"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
 					onclick="PF('gu').hide();" />
 			</h:form>
 		</p:confirmDialog>
-		<p:confirmDialog header="Confirmación"
-			message="Está seguro de borrar el horario?" closable="false"
+		<p:confirmDialog header="Confirmaci&oacute;n"
+			message="Est&aacute; seguro de borrar el horario?" closable="false"
 			showEffect="fade" hideEffect="explode" widgetVar="ef">
 			<h:form>
 				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
 					icon="ui-icon-check"
-					action="#{recursosServiciosBean.eliminarhorario()}"
+					action="#{recursosServiciosBean.eliminarhorarioNoDis()}"
 					oncomplete="PF('ef').hide();" update="frm :frm1:tbb" />
 				<p:commandButton value="No" type="button"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
 					onclick="PF('ef').hide();" />
 			</h:form>
 		</p:confirmDialog>
-		<p:confirmDialog header="Confirmación"
-			message="Está seguro de cambiar el estado del horario?"
+		<p:confirmDialog header="Confirmaci&oacute;n"
+			message="Est&aacute; seguro de cambiar el estado del horario?"
 			closable="false" showEffect="fade" hideEffect="explode"
 			widgetVar="ce">
 			<h:form>
 				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
 					icon="ui-icon-check"
-					action="#{recursosServiciosBean.cambiarEstadoHorario()}"
+					action="#{recursosServiciosBean.cambiarEstadoHorarioNoDis()}"
 					oncomplete="PF('ce').hide();" update="frm frm1:tbb" />
 				<p:commandButton value="No" type="button"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close"

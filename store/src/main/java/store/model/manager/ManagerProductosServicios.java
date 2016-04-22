@@ -3,6 +3,7 @@ package store.model.manager;
 import store.model.dao.entities.*;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
@@ -353,7 +354,7 @@ public class ManagerProductosServicios{
 		return fab_prod;
 	}
 
-	// DIA y horario
+	// DIA y horario disponible
 
 	/**
 	 * buscar todos Dias
@@ -422,7 +423,7 @@ public class ManagerProductosServicios{
 	public List<FabHorario> horarioByProdId(String prod_id) throws Exception {
 		return mDAO.findWhere(FabHorario.class, "o.fabProducto.proId='"+prod_id+"'", null);
 	}
-
+	
 	/**
 	 * metodo para asignar el dia a un producto
 	 * 
@@ -473,5 +474,79 @@ public class ManagerProductosServicios{
 		mDAO.actualizar(fabhor);
 		return h;
 		}	
+	
+	// horario no disponible
+	
+		/**
+		 * Agrega horarionodispo
+		 * @param prod_id
+		 * @param nombre
+		 * @param valor
+		 * @throws Exception
+		 */
+		public void insertarhorarioNoDis(Date fab_dia,Time hora_inicio, Time hora_final) throws Exception {
+			FabHorarioNodisponible horario = new FabHorarioNodisponible();
+			horario.setFabProducto(fab_prod);
+			horario.setHornodisDia(fab_dia);
+			horario.setHornodisHinicial(hora_inicio);
+			horario.setHornodisHfinal(hora_final);
+			horario.setHornodisEstado("A");
+			mDAO.insertar(horario);
+		}
+		
+		/**
+		 * Elimina dia hora no disponible
+		 * @param prod_id
+		 * @throws Exception
+		 */
+		public void eliminarHorarioNoDis(Integer hor_id) throws Exception {
+			mDAO.eliminar(FabHorarioNodisponible.class,hor_id);
+		}
+		
+		/**
+		 * buscar horario no dis por prodid
+		 * 
+		 * @param prod_id
+		 * @throws Exception
+		 */
+		@SuppressWarnings("unchecked")
+		public List<FabHorarioNodisponible> horarioNoDisByProdId(String prod_id) throws Exception {
+			return mDAO.findWhere(FabHorarioNodisponible.class, "o.fabProducto.proId='"+prod_id+"'", null);
+		}
+		
+		/**
+		 * buscar horario por ID
+		 * 
+		 * @param prod_id
+		 * @throws Exception
+		 */
+		public FabHorarioNodisponible HorarioNoDisByID(Integer hor_id) throws Exception {
+			return (FabHorarioNodisponible) mDAO.findById(FabHorarioNodisponible.class, hor_id);
+		}
+		
+		/**
+		 * Cambiar estado productofotos
+		 * @param id_prod
+		 * @param nombre
+		 * @param apellido
+		 * @param correo
+		 * @throws Exception
+		 */	
+		public String cambioEstadoHorarioNoDis(Integer hor_id) throws Exception{
+			String h="";
+			FabHorarioNodisponible fabhornodis = HorarioNoDisByID(hor_id);						
+			
+			if(fabhornodis.getHornodisEstado().equals("A")){
+				fabhornodis.setHornodisEstado("I");
+				h="Estado del Horario Modificado";
+				}
+			else if(fabhornodis.getHornodisEstado().equals("I")){
+				fabhornodis.setHornodisEstado("A");
+				h="Estado del Horario Modificado";
+				}
+			mDAO.actualizar(fabhornodis);
+			return h;
+			}	
+	
 
 }

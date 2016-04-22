@@ -92,7 +92,7 @@ public class SesionBean implements Serializable{
 				Mensaje.crearMensajeWARN("Campos usuario y contraseña requeridos");
 				return "";
 			}else{
-				setMenu(mngAcc.loginWS(getUsuario(), getPass(), "ARRHAB"));
+				setMenu(mngAcc.loginWS(getUsuario(), getPass(), "YSTORE"));
 				setPass(null);
 				return "/admin/views/index?faces-redirect=true";
 			}
