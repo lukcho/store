@@ -164,5 +164,9 @@ public class SesionBean implements Serializable{
         	return user.getUsuario();
         }
 	}
-
+	
+	public String Volver(){
+		return "index?faces-redirect=true";
+		
+	}
 }

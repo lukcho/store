@@ -156,7 +156,7 @@
 						<b:navCommandLink id="horario" value="Ver Horario"
 							action="#{recursosServiciosBean.verhorariodePro}"
 							rendered="#{recursosServiciosBean.verhorario}"
-							iconAwesome="sliders"></b:navCommandLink>
+							iconAwesome="fa fa-clock-o"></b:navCommandLink>
 					</b:column>
 					<b:column span="2">
 						<h:outputLabel value="Ver Horario No Disponible: "  rendered="#{recursosServiciosBean.verhorario}"/>
@@ -165,7 +165,7 @@
 						<b:navCommandLink id="horarionodi" value="Ver Horario No Disponible"
 							action="#{recursosServiciosBean.verhorariodeProNoDis}"
 							rendered="#{recursosServiciosBean.verhorario}"
-							iconAwesome="sliders"></b:navCommandLink>
+							iconAwesome="fa fa-clock-o"></b:navCommandLink>
 					</b:column>
 				</b:row>
 				<br />
@@ -221,7 +221,7 @@
 							uploadLabel="Subir" label="Seleccionar"
 							fileUploadListener="#{recursosServiciosBean.ImagenServ}">
 						</p:fileUpload>
-						<p:growl id="messages" showDetail="true" />
+						<p:growl id="messages" showDetail="false" />
 					</b:column>
 				</b:row>
 				<p:dataTable id="tbb" value="#{recursosServiciosBean.listaProductofoto}" reflow="true" var="profot" rows="3" emptyMessage="Sin Datos" paginator="true"
@@ -235,13 +235,23 @@
 							update="frm1 tbb">
 							<p:tooltip id="toolTipTrack2" for="trackcamb" value="Bot&oacute;n para cambiar el estado de la imagen" trackMouse="true" />
 						</p:commandButton>
+							&nbsp;&nbsp;&nbsp;
+							<p:commandButton id="trackmost" icon="ui-icon-image"	action="#{recursosServiciosBean.cambiarMostrarfotos(profot)}"
+							update="frm1 tbb">
+							<p:tooltip id="toolTipTrack3" for="trackmost" value="Bot&oacute;n para mostrar imagen" trackMouse="true" />
+						</p:commandButton>
 					</p:column>
 					<p:column headerText="NOMBRE" width="100">
 						<h:outputText value="#{profot.profNombre}"></h:outputText>
 					</p:column>
 					<p:column headerText="IMAGEN" width="100">
 						<p:graphicImage width="150" height="150"
-							value="/imgevent/#{profot.profDireccion}"></p:graphicImage>
+							value="#{facesContex}/imgevent/300.jpg"></p:graphicImage>
+					</p:column>
+					<p:column headerText="MOSTRAR" width="20">
+						<h:selectBooleanCheckbox value="#{profot.profMostrar}" disabled="true" >
+						
+						</h:selectBooleanCheckbox>
 					</p:column>
 					<p:column headerText="ESTADO" width="30">
 						<h:outputText value="#{profot.profEstado}"></h:outputText>
@@ -296,6 +306,20 @@
 					onclick="PF('ce').hide();" />
 			</h:form>
 		</p:confirmDialog>
+		<p:confirmDialog header="Confirmación"
+			message="Está seguro de mostrar la imagen?" closable="false"
+			showEffect="fade" hideEffect="explode" widgetVar="mf">
+			<h:form>
+				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check"
+					action="#{recursosServiciosBean.cambiarMostrarfoto()}"
+					oncomplete="PF('mf').hide();" update="frm frm1:tbb" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+					onclick="PF('mf').hide();" />
+			</h:form>
+		</p:confirmDialog>
+		
 	</ui:define>
 </ui:composition>
 </html>

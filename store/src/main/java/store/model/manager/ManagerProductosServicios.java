@@ -46,7 +46,7 @@ public class ManagerProductosServicios{
 	public List<FabProducto> findAllProductos() {
 		return mDAO.findAll(FabProducto.class);
 	}
-
+	
 	/**
 	 * buscar Productos por ID
 	 * @param prod_id
@@ -220,7 +220,7 @@ public class ManagerProductosServicios{
 	
 	@SuppressWarnings("unchecked")
 	public List<FabProductoFoto> findProdFoto() {
-		return mDAO.findWhere(FabProductoFoto.class, "1=1", null);
+		return mDAO.findWhere(FabProductoFoto.class, " o.profMostrar = true", null);
 	}
 
 	/**
@@ -272,6 +272,7 @@ public class ManagerProductosServicios{
 		prodfoto.setProfNombre(nombre);
 		prodfoto.setProfDireccion(direccion);
 		prodfoto.setProfEstado("A");
+		prodfoto.setProfMostrar(false);
 		mDAO.insertar(prodfoto);
 	}
 	
@@ -319,6 +320,36 @@ public class ManagerProductosServicios{
 		else if(prodfoto.getProfEstado().equals("I")){
 			prodfoto.setProfEstado("A");
 			h="Estado del Registro Modificado";
+			}
+		mDAO.actualizar(prodfoto);
+		return h;
+		}		
+	
+	/**
+	 * Cambiar estado productofotos
+	 * @param id_prod
+	 * @param nombre
+	 * @param apellido
+	 * @param correo
+	 * @throws Exception
+	 */	
+	public String cambioMostrarprodfoto(Integer prodfoto_id, FabProductoFoto prodf) throws Exception{
+		String h="";
+		List<FabProductoFoto> cond;
+			cond = productoFotoByNombre(prodf.getProfNombre());
+			for (FabProductoFoto y : cond) {
+				if (y.getProfMostrar() == true) {
+					y.setProfMostrar(false);
+				}
+			}
+		FabProductoFoto prodfoto = productofotoByID(prodfoto_id);
+		if(prodfoto.getProfMostrar() == false){
+			prodfoto.setProfMostrar(true);
+			h="Modificado mostrar imagen";
+			}
+		else if(prodfoto.getProfMostrar() == true){
+			prodfoto.setProfMostrar(false);
+			h="Modificado mostrar imagen";
 			}
 		mDAO.actualizar(prodfoto);
 		return h;

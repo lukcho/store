@@ -1,24 +1,97 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
- <h:head>
-    	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-        <title>Tienda Store</title>
- </h:head>
-<body>
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:b="http://bootsfaces.net/ui">
 
-	<c:forEach items="#{compraBean.listaProductofoto}" var="prod">
-		<div>
-			<h:graphicImage value="/imgevent/300.jpg" width="150"
-				height="150" />
-			<br /> <br /> nombre: #{prod.profNombre} <br /> precio:
-			$#{prod.fabProducto.proPrecio.floatValue()}
-		</div>
-	</c:forEach>
-</body>
+<ui:composition template="template.xhtml">
+	<ui:define name="titulo">
+            Yachay Store
+        </ui:define>
+	<ui:define name="contenido">
+		<h:form>
+			<center>
+				<h1>YACHAY STORE</h1>
+			</center>
+		</h:form>
+		<br />
+		<h:form id="frm">
+			<p:growl id="messages" showDetail="false" />
+			<p:layout style="min-height:550px;">
+				<p:layoutUnit position="west" size="200" header="CAT&Aacute;LOGOS"
+					resizable="true" minSize="40" maxSize="200" closable="true"
+					collapsible="true">
+					<p:tree value="#{basicView.root}" var="node">
+						<p:treeNode>
+							<h:outputText value="#{node}" />
+						</p:treeNode>
+					</p:tree>
+				</p:layoutUnit>
+				<p:layoutUnit position="center" size="600">
+					<p:dataGrid var="proser" value="#{compraBean.listaProdFoto}"
+						columns="3" layout="grid" rows="12" paginator="true" id="cars"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="6,12,16">
+
+						<p:panel header="#{proser.fabProducto.proNombre}"
+							style="text-align:center">
+							<h:panelGrid columns="1" style="width:100%">
+								<p:graphicImage value="#{facesContex}/imgevent/300.jpg" width="150" height="150"/>
+								<h:outputText value="#{proser.fabProducto.proDescripcion}" />
+								<h:outputText value="$ #{proser.fabProducto.proPrecio}" />
+								<h:outputText value="$ #{proser.fabProducto.proTipo}" />
+								<p:commandLink update=":frm:detalleproser"
+									oncomplete="PF('verproser').show()" title="Informacion">
+									<h:outputText styleClass="ui-icon ui-icon-search"
+										style="margin:0 auto;" />
+									<f:setPropertyActionListener value="#{proser}"
+										target="#{compraBean.fabproductofoto}" />
+								</p:commandLink>
+							</h:panelGrid>
+						</p:panel>
+					</p:dataGrid>
+				</p:layoutUnit>
+				<p:layoutUnit position="east" size="200" header="IM&Aacute;GENES"
+					resizable="true" closable="true" collapsible="true" effect="drop">
+				</p:layoutUnit>
+			</p:layout>
+			<p:dialog header="Informaci&oacute;n del Producto/Servicio"
+				widgetVar="verproser" modal="true" showEffect="fade"
+				hideEffect="fade" resizable="false">
+				<p:outputPanel id="detalleproser" style="text-align:center;">
+					<p:panelGrid columns="2" columnClasses="label,value">
+						<f:facet name="header">
+							<p:graphicImage value="#{facesContex}/imgevent/300.jpg" width="150" height="150" />
+						</f:facet>
+						<h:outputText value="Nombre: " />
+						<h:outputText
+							value="#{compraBean.fabproductofoto.fabProducto.proNombre}" />
+						<h:outputText value="Descripcion: " />
+						<h:outputText
+							value="#{compraBean.fabproductofoto.fabProducto.proDescripcion}" />
+						<h:outputText value="Precio: " />
+						<h:outputText
+							value="$ #{compraBean.fabproductofoto.fabProducto.proPrecio}" />
+						<h:outputText value="Stock: " />
+						<h:outputText
+							value="#{compraBean.fabproductofoto.fabProducto.proStock}" />
+						<h:outputText value="Tipo: " />
+						<h:outputText
+							value="#{compraBean.fabproductofoto.fabProducto.proTipo}" />
+						<p:commandButton value="Comprar" styleClass="btn btn-info"
+							action="#{compraBean.irComprar()}" style="padding:7px;"
+							update="frm messages">
+						</p:commandButton>
+						<p:commandButton value="Volver" styleClass="btn btn-info"
+							style="padding:7px;" actionListener="index.xhtml"
+							update="frm messages">
+						</p:commandButton>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
 </html>

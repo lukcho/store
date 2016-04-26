@@ -26,6 +26,9 @@ public class FabProductoFoto implements Serializable {
 	@Column(name="prof_estado", columnDefinition="bpchar", length=1)
 	private String profEstado;
 
+	@Column(name="prof_mostrar")
+	private Boolean profMostrar;
+
 	@Column(name="prof_nombre", length=200)
 	private String profNombre;
 
@@ -59,6 +62,14 @@ public class FabProductoFoto implements Serializable {
 
 	public void setProfEstado(String profEstado) {
 		this.profEstado = profEstado;
+	}
+
+	public Boolean getProfMostrar() {
+		return this.profMostrar;
+	}
+
+	public void setProfMostrar(Boolean profMostrar) {
+		this.profMostrar = profMostrar;
 	}
 
 	public String getProfNombre() {

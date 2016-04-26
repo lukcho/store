@@ -183,6 +183,7 @@ create table FAB_PRODUCTO_FOTOS (
    PRO_ID               VARCHAR(20)          null,
    PROF_NOMBRE          VARCHAR(200)         null,
    PROF_DIRECCION       VARCHAR(200)         null,
+   PROF_MOSTRAR         BOOL                 null,
    PROF_ESTADO          CHAR                 null,
     constraint PK_FAB_PRODUCTO_FOTOS primary key (PROF_ID)
 );

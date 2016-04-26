@@ -50,13 +50,14 @@
 		<!-- MAIL -->
 		<dependency>
 			<groupId>javax.mail</groupId>
-			<artifactId>javax.mail-api</artifactId>
-			<version>1.5.5</version>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
 		</dependency>
+		<!-- POSTGRES -->
 		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.5.5</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4-1201-jdbc41</version>
 		</dependency>
 		<!-- FILE UPLOAD -->
 		<dependency>
@@ -84,11 +85,23 @@
 			<artifactId>bootstrap</artifactId>
 			<version>1.0.10</version>
 		</dependency>
+		<!-- DATA EXPORT -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.7</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>store</finalName>
 	</build>
 	<properties>
+		<maven.compiler.version>3.2</maven.compiler.version>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<failOnMissingWebXml>false</failOnMissingWebXml>

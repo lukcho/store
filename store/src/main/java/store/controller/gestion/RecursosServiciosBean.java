@@ -67,6 +67,7 @@ public class RecursosServiciosBean implements Serializable {
 	private String pro_stock;
 	private String pro_estado;
 	private String pro_estado_funcional;
+	private boolean mostrarfoto;
 
 	private boolean mostrarpro_id;
 	private boolean edicion;
@@ -97,7 +98,7 @@ public class RecursosServiciosBean implements Serializable {
 	private Integer dia_ser;
 	private Time horainiciotiemp;
 	private Time horafintiemp;
-	
+
 	// horario no disponible
 
 	private Date hora_inicionodis;
@@ -105,10 +106,9 @@ public class RecursosServiciosBean implements Serializable {
 	private Date dianodis;
 	private Time horainiciotiempnodis;
 	private Time horafintiempnodis;
-	
+
 	private Date date;
 	private Date fecha;
-
 
 	public RecursosServiciosBean() {
 	}
@@ -130,15 +130,24 @@ public class RecursosServiciosBean implements Serializable {
 		mostrarpro_id = false;
 		hora_inicio = null;
 		hora_fin = null;
-		hora_inicionodis=null;
+		hora_inicionodis = null;
 		hora_finnodis = null;
-		dianodis=null;
+		dianodis = null;
+		mostrarfoto = false;
 		listaProducto = managerprod.findAllProductos();
 		listaProductofoto = new ArrayList<FabProductoFoto>();
 		listaHorario = new ArrayList<FabHorario>();
 		listaHorarioNoDis = new ArrayList<FabHorarioNodisponible>();
 	}
-	
+
+	public boolean isMostrarfoto() {
+		return mostrarfoto;
+	}
+
+	public void setMostrarfoto(boolean mostrarfoto) {
+		this.mostrarfoto = mostrarfoto;
+	}
+
 	public boolean isGuardarin() {
 		return guardarin;
 	}
@@ -150,11 +159,11 @@ public class RecursosServiciosBean implements Serializable {
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 	public Date getFecha() {
 		return fecha;
 	}
@@ -162,7 +171,7 @@ public class RecursosServiciosBean implements Serializable {
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
-	
+
 	public FabHorarioNodisponible getHornodis() {
 		return hornodis;
 	}
@@ -251,7 +260,8 @@ public class RecursosServiciosBean implements Serializable {
 		return listaHorarioNoDis;
 	}
 
-	public void setListaHorarioNoDis(List<FabHorarioNodisponible> listaHorarioNoDis) {
+	public void setListaHorarioNoDis(
+			List<FabHorarioNodisponible> listaHorarioNoDis) {
 		this.listaHorarioNoDis = listaHorarioNoDis;
 	}
 
@@ -508,8 +518,9 @@ public class RecursosServiciosBean implements Serializable {
 			BigDecimal proprecio = new BigDecimal(pro_precio.replace(",", "."));
 			Integer prostock = Integer.parseInt(pro_stock);
 			if (edicion) {
-				managerprod.editarproducto(prodser_id.trim(), pro_nombre.trim(),
-						pro_cod_barras.trim(), pro_tipo.trim(), pro_descripcion.trim(), procosto,
+				managerprod.editarproducto(prodser_id.trim(),
+						pro_nombre.trim(), pro_cod_barras.trim(),
+						pro_tipo.trim(), pro_descripcion.trim(), procosto,
 						proprecio, prostock, pro_estado, pro_estado_funcional);
 				Mensaje.crearMensajeINFO("Actualizado - Modificado");
 				if (pro_tipo.equals("S")) {
@@ -518,18 +529,19 @@ public class RecursosServiciosBean implements Serializable {
 					verhorario = false;
 				asignarprofoto();
 			} else {
-					managerprod.insertarProducto(prodser_id.trim(), pro_nombre.trim(),
-							pro_cod_barras.trim(), pro_tipo.trim(), pro_descripcion.trim(),
-							procosto, proprecio, prostock);
-					Mensaje.crearMensajeINFO("Registrado - Creado");
-					imagenprod = false;
-					mostrarpro_id = true;
-					guardarin=true;
-					if (pro_tipo.equals("S")) {
-						verhorario = true;
-					} else
-						verhorario = false;
-					asignarprofoto();
+				managerprod.insertarProducto(prodser_id.trim(),
+						pro_nombre.trim(), pro_cod_barras.trim(),
+						pro_tipo.trim(), pro_descripcion.trim(), procosto,
+						proprecio, prostock);
+				Mensaje.crearMensajeINFO("Registrado - Creado");
+				imagenprod = false;
+				mostrarpro_id = true;
+				guardarin = true;
+				if (pro_tipo.equals("S")) {
+					verhorario = true;
+				} else
+					verhorario = false;
+				asignarprofoto();
 			}
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
@@ -623,7 +635,7 @@ public class RecursosServiciosBean implements Serializable {
 		setProdelsita(prod);
 		RequestContext.getCurrentInstance().execute("PF('ce').show();");
 	}
-	
+
 	/**
 	 * Redirecciona a la pagina de creacion de sitios
 	 * 
@@ -634,10 +646,11 @@ public class RecursosServiciosBean implements Serializable {
 		mostrarpro_id = false;
 		edicion = false;
 		imagenprod = true;
-		cat_id=0;
+		cat_id = 0;
 		guardarin = false;
-		cati_id=0;
-		cati_idhijo=0;
+		cati_id = 0;
+		mostrarfoto = false;
+		cati_idhijo = 0;
 		listaProductofoto.clear();
 		return "nproducto?faces-redirect=true";
 	}
@@ -732,6 +745,40 @@ public class RecursosServiciosBean implements Serializable {
 		System.out.println("holi");
 
 	}
+
+	/**
+	 * activar y desactivar estado fotoproducto
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String cambiarMostrarfoto() {
+		try {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(
+					null,
+					new FacesMessage(managerprod
+							.cambioMostrarprodfoto(getProdelsitafot()
+									.getProfId(), prodelsitafot)));
+			getListaProductofoto().clear();
+			getListaProductofoto().addAll(
+					managerprod.productoFotoByNombre(pro_nombre));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return "";
+	}
+
+	/**
+	 * eliminar un fotoproducto abriendo el dialogo
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public void cambiarMostrarfotos(FabProductoFoto prod) {
+		setProdelsitafot(prod);
+				RequestContext.getCurrentInstance().execute("PF('mf').show();");
+			}
 
 	/**
 	 * eliminar un fotoproducto
@@ -995,7 +1042,7 @@ public class RecursosServiciosBean implements Serializable {
 	 */
 	public List<SelectItem> getlistTipo() {
 		List<SelectItem> lista = new ArrayList<SelectItem>();
-		lista.add(new SelectItem("","Seleccionar"));
+		lista.add(new SelectItem("", "Seleccionar"));
 		lista.add(new SelectItem(Funciones.estadoProducto,
 				Funciones.estadoProducto + " : "
 						+ Funciones.valorEstadoProducto));
@@ -1102,7 +1149,6 @@ public class RecursosServiciosBean implements Serializable {
 				Integer.parseInt(array[1]), 00);
 		return resp;
 	}
-	
 
 	/**
 	 * eliminar un fotoproducto abriendo el dialogo
@@ -1115,7 +1161,7 @@ public class RecursosServiciosBean implements Serializable {
 		RequestContext.getCurrentInstance().execute("PF('ef').show();");
 		System.out.println("holi");
 	}
-	
+
 	/**
 	 * eliminar un horario
 	 * 
@@ -1175,7 +1221,7 @@ public class RecursosServiciosBean implements Serializable {
 
 	public String verhorariodePro() {
 		try {
-			guardarin=true;
+			guardarin = true;
 			getListaHorario().clear();
 			getListaHorario().addAll(managerprod.horarioByProdId(prodser_id));
 			return "horariodisponible?faces-redirect=true";
@@ -1186,7 +1232,7 @@ public class RecursosServiciosBean implements Serializable {
 		}
 		return "";
 	}
-	
+
 	/**
 	 * metodo para asignar el producto al productofoto
 	 * 
@@ -1197,131 +1243,135 @@ public class RecursosServiciosBean implements Serializable {
 	}
 
 	// horario NO DISPONIBLES
-		/**
-		 * crear un horario no disponible del producto
-		 * 
-		 * @param pro_id
-		 * @throws Exception
-		 */
-		public String crearhorarioNoDisponible() {
-			try {
-				managerprod.asignarprod(prodser_id);
-				setHorainiciotiempnodis((this.fechaAtiempo(hora_inicionodis)));
-				setHorafintiempnodis((this.fechaAtiempo(hora_finnodis)));
-				if (horafintiempnodis.getTime() <= horainiciotiempnodis.getTime()) {
-					FacesContext context = FacesContext.getCurrentInstance();
-					context.addMessage(null, new FacesMessage("Error..!!!",
-							"Verifique si horario "));
-				} else {
-					 java.sql.Date sqlDate = new java.sql.Date(dianodis.getTime());
-					managerprod.insertarhorarioNoDis(sqlDate,horainiciotiempnodis, horafintiempnodis);
-
-					FacesContext context = FacesContext.getCurrentInstance();
-					context.addMessage(null, new FacesMessage("Registrado..!!!",
-							"Horario Creado "));
-					getListaHorarioNoDis().clear();
-					getListaHorarioNoDis().addAll(
-							managerprod.horarioNoDisByProdId(prodser_id));
-					hora_inicionodis = null;
-					hora_finnodis = null;
-					horainiciotiempnodis = null;
-					horafintiempnodis = null;
-					dianodis=null;
-					
-				}
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-			}
-			return "";
-		}
-
-
-		/**
-		 * eliminar un fotoproducto abriendo el dialogo
-		 * 
-		 * @param pro_id
-		 * @throws Exception
-		 */
-		public void eliminarHorarioNoDis(FabHorarioNodisponible hor) {
-			setHornodis(hor);
-			RequestContext.getCurrentInstance().execute("PF('ef').show();");
-			System.out.println("holi");
-		}
-		
-		/**
-		 * eliminar un horario
-		 * 
-		 * @param pro_id
-		 * @throws Exception
-		 */
-		public String eliminarhorarioNoDis() {
-			try {
+	/**
+	 * crear un horario no disponible del producto
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String crearhorarioNoDisponible() {
+		try {
+			managerprod.asignarprod(prodser_id);
+			setHorainiciotiempnodis((this.fechaAtiempo(hora_inicionodis)));
+			setHorafintiempnodis((this.fechaAtiempo(hora_finnodis)));
+			if (horafintiempnodis.getTime() <= horainiciotiempnodis.getTime()) {
 				FacesContext context = FacesContext.getCurrentInstance();
-				context.addMessage(null, new FacesMessage("INFORMACION",
-						"Se ha eliminado un horario"));
-				managerprod.eliminarHorarioNoDis(getHorario().getHorId());
+				context.addMessage(null, new FacesMessage("Error..!!!",
+						"Verifique si horario "));
+			} else {
+				java.sql.Date sqlDate = new java.sql.Date(dianodis.getTime());
+				managerprod.insertarhorarioNoDis(sqlDate, horainiciotiempnodis,
+						horafintiempnodis);
+
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Registrado..!!!",
+						"Horario Creado "));
 				getListaHorarioNoDis().clear();
 				getListaHorarioNoDis().addAll(
-						managerprod.horarioNoDisByProdId(getHorario().getFabProducto()
-								.getProId()));
+						managerprod.horarioNoDisByProdId(prodser_id));
+				hora_inicionodis = null;
+				hora_finnodis = null;
+				horainiciotiempnodis = null;
+				horafintiempnodis = null;
+				dianodis = null;
 
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
 			}
-			return "";
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
+		return "";
+	}
 
-		/**
-		 * eliminar un fotoproducto abriendo el dialogo
-		 * 
-		 * @param pro_id
-		 * @throws Exception
-		 */
-		public void cambiarEstadohorarioNoDis(FabHorarioNodisponible hor) {
-			setHornodis(hor);
-			RequestContext.getCurrentInstance().execute("PF('ce').show();");
-			System.out.println("holi");
+	/**
+	 * eliminar un fotoproducto abriendo el dialogo
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public void eliminarHorarioNoDis(FabHorarioNodisponible hor) {
+		setHornodis(hor);
+		RequestContext.getCurrentInstance().execute("PF('ef').show();");
+		System.out.println("holi");
+	}
 
+	/**
+	 * eliminar un horario
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String eliminarhorarioNoDis() {
+		try {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("INFORMACION",
+					"Se ha eliminado un horario"));
+			managerprod.eliminarHorarioNoDis(getHorario().getHorId());
+			getListaHorarioNoDis().clear();
+			getListaHorarioNoDis().addAll(
+					managerprod.horarioNoDisByProdId(getHorario()
+							.getFabProducto().getProId()));
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
+		return "";
+	}
 
-		/**
-		 * activar y desactivar estado horario
-		 * 
-		 * @param pro_id
-		 * @throws Exception
-		 */
-		public String cambiarEstadoHorarioNoDis() {
-			try {
-				FacesContext context = FacesContext.getCurrentInstance();
-				context.addMessage(null, new FacesMessage("INFORMACION",
-						managerprod.cambioEstadoHorarioNoDis(getHornodis().getHornId())));
-				getListaHorarioNoDis().clear();
-				getListaHorarioNoDis().addAll(
-						managerprod.horarioNoDisByProdId(getHornodis().getFabProducto()
-								.getProId()));
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-			}
-			return "";
+	/**
+	 * eliminar un fotoproducto abriendo el dialogo
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public void cambiarEstadohorarioNoDis(FabHorarioNodisponible hor) {
+		setHornodis(hor);
+		RequestContext.getCurrentInstance().execute("PF('ce').show();");
+		System.out.println("holi");
+
+	}
+
+	/**
+	 * activar y desactivar estado horario
+	 * 
+	 * @param pro_id
+	 * @throws Exception
+	 */
+	public String cambiarEstadoHorarioNoDis() {
+		try {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(
+					null,
+					new FacesMessage("INFORMACION",
+							managerprod.cambioEstadoHorarioNoDis(getHornodis()
+									.getHornId())));
+			getListaHorarioNoDis().clear();
+			getListaHorarioNoDis().addAll(
+					managerprod.horarioNoDisByProdId(getHornodis()
+							.getFabProducto().getProId()));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
+		return "";
+	}
 
-		public String verhorariodeProNoDis() {
-			try {
-				guardarin=true;
-				date = new Date();
-				fecha = addDays(date,1);
-				getListaHorarioNoDis().clear();
-				getListaHorarioNoDis().addAll(managerprod.horarioNoDisByProdId(prodser_id));
-				return "horarionodisponible?faces-redirect=true";
+	public String verhorariodeProNoDis() {
+		try {
+			guardarin = true;
+			date = new Date();
+			fecha = addDays(date, 1);
+			getListaHorarioNoDis().clear();
+			getListaHorarioNoDis().addAll(
+					managerprod.horarioNoDisByProdId(prodser_id));
+			return "horarionodisponible?faces-redirect=true";
 
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
-			return "";
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
-	
-	//DIA
+		return "";
+	}
+
+	// DIA
 
 	/**
 	 * Metodo para averiguar si esta el nombre vacio
@@ -1337,9 +1387,9 @@ public class RecursosServiciosBean implements Serializable {
 		}
 		return listadoSI;
 	}
-	
+
 	public static Date addDays(Date date, int days) {
-		days=1;
+		days = 1;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.add(Calendar.DATE, days); // minus number would decrement the days
@@ -1356,7 +1406,7 @@ public class RecursosServiciosBean implements Serializable {
 	 */
 	public String volverproducto() throws Exception {
 		// limpiar datos
-		guardarin=true;
+		guardarin = true;
 		getListaProductofoto().clear();
 		getListaProductofoto().addAll(
 				managerprod.productoFotoByNombre(pro_nombre));
@@ -1405,7 +1455,7 @@ public class RecursosServiciosBean implements Serializable {
 		}
 		return r;
 	}
-	
+
 	/**
 	 * Cancela la accion de irHorario
 	 * 
@@ -1420,14 +1470,20 @@ public class RecursosServiciosBean implements Serializable {
 		}
 		return r;
 	}
-	
+
 	public void abrirDialog() {
-		if(edicion == true)
-		{
-				RequestContext.getCurrentInstance().execute("PF('gu').show();");
-		}else
-			if (!averiguarproductoid(prodser_id)) 
-				
-				RequestContext.getCurrentInstance().execute("PF('gu').show();");
-		}
+		if (edicion == true) {
+			RequestContext.getCurrentInstance().execute("PF('gu').show();");
+		} else if (!averiguarproductoid(prodser_id))
+
+			RequestContext.getCurrentInstance().execute("PF('gu').show();");
+	}
+
+	public void abrirDialoghordis() {
+		if (edicion == true) {
+			RequestContext.getCurrentInstance().execute("PF('gu').show();");
+		} else
+
+			RequestContext.getCurrentInstance().execute("PF('gu').show();");
+	}
 }
