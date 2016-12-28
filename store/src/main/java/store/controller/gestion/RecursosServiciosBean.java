@@ -602,8 +602,7 @@ public class RecursosServiciosBean implements Serializable {
 				verhorario = true;
 			}
 			getListaProductofoto().clear();
-			getListaProductofoto().addAll(
-					managerprod.productoFotoByNombre(pro_nombre));
+			getListaProductofoto().addAll(managerprod.productoFotoByNombre(pro_nombre));
 			return "nproducto?faces-redirect=true";
 		} catch (Exception e) {
 			// TODO: handle exception

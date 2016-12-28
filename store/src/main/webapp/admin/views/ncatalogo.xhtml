@@ -25,7 +25,7 @@
 							<h:selectOneMenu id="trackseleccionar" styleClass="form-control"
 								value="#{catalogosBean.cat_id}" required="true"
 								requiredMessage="Campo categoria requerido">
-								<f:selectItems value="#{catalogosBean.listaCatalogo}" />
+								<f:selectItems value="#{catalogosBean.listTipo}" />
 								<f:ajax render="trackseleccionar1" listener="#{catalogosBean.asignarCat()}"/>
 							</h:selectOneMenu>
 						</h:panelGroup>

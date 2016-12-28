@@ -14,6 +14,7 @@ import org.primefaces.context.RequestContext;
 
 import store.model.dao.entities.FabCatalogo;
 import store.model.dao.entities.FabCatalogoitem;
+import store.model.dao.entities.FabHorario;
 import store.model.dao.entities.FabProducto;
 import store.model.dao.entities.FabProductoFoto;
 import store.model.dao.entities.Producto;
@@ -31,7 +32,7 @@ public class CompraBean implements Serializable {
 	private ManagerProductosServicios managerprod;
 	@EJB
 	private ManagerCatalogos managercat;
-	
+
 	ManagerCarga mc;
 
 	// PRODUCTOS Y SERVICIOS
@@ -51,7 +52,6 @@ public class CompraBean implements Serializable {
 	private String pro_estado;
 	private String pro_estado_funcional;
 
-	
 	private boolean mostrarpro_id;
 	private boolean guardarin;
 
@@ -65,11 +65,15 @@ public class CompraBean implements Serializable {
 	private FabProducto fabprod;
 	private FabProductoFoto fabproductofoto;
 
-	
 	private Producto prod;
 
 	// imagnees
 	private List<String> images;
+	
+	
+	//horarios
+	private List<FabHorario> listaHorario;
+
 
 	public CompraBean() {
 	}
@@ -85,7 +89,17 @@ public class CompraBean implements Serializable {
 		edicion = false;
 		ediciontipo = false;
 		verhorario = false;
+		images = new ArrayList<String>();
 		listaProducto = managerprod.findAllProductos();
+		listaHorario = new ArrayList<FabHorario>();
+	}
+
+	public List<FabHorario> getListaHorario() {
+		return listaHorario;
+	}
+
+	public void setListaHorario(List<FabHorario> listaHorario) {
+		this.listaHorario = listaHorario;
 	}
 	
 	public boolean isMostrarpro_id() {
@@ -325,14 +339,15 @@ public class CompraBean implements Serializable {
 				ediciontipo = true;
 				verhorario = true;
 			}
-						
-//	        images = new ArrayList<String>();
-//	        for (int i = 1; i <= 12; i++) {
-//	        	FabProductoFoto fabprodfoto;
-//	        	fabprodfoto = managerprod.productofotoByID(Integer.parseInt(prodser_id));
-//	            images.add(""+fabprodfoto.getProfDireccion());
-//	        }
-			
+
+			// images = new ArrayList<String>();
+			// for (int i = 1; i <= 12; i++) {
+			// FabProductoFoto fabprodfoto;
+			// fabprodfoto =
+			// managerprod.productofotoByID(Integer.parseInt(prodser_id));
+			// images.add(""+fabprodfoto.getProfDireccion());
+			// }
+
 			getListaProductofoto().clear();
 			getListaProductofoto().addAll(
 					managerprod.productoFotoByNombre(pro_nombre));
@@ -343,6 +358,8 @@ public class CompraBean implements Serializable {
 		}
 		return "";
 	}
+	
+	
 
 	// ------ traslados--------
 
@@ -360,7 +377,7 @@ public class CompraBean implements Serializable {
 		}
 		return l1;
 	}
-	
+
 	/**
 	 * Cancela la accion de irHorario
 	 * 
@@ -369,7 +386,7 @@ public class CompraBean implements Serializable {
 	public String irLogin() {
 		return "login?faces-redirect=true";
 	}
-	
+
 	/**
 	 * Cancela la accion de irHorario
 	 * 
@@ -377,7 +394,8 @@ public class CompraBean implements Serializable {
 	 */
 	public String irComprar() {
 		try {
-			prod = mc.ProductoByprodfoto(fabproductofoto.getFabProducto().getProId());
+			prod = mc.ProductoByprodfoto(fabproductofoto.getFabProducto()
+					.getProId());
 			prodser_id = prod.getProId();
 			pro_descripcion = prod.getProDescripcion();
 			pro_nombre = prod.getProNombre();
@@ -390,7 +408,8 @@ public class CompraBean implements Serializable {
 			pro_estado = prod.getProEstado();
 			pro_estado_funcional = prod.getProEstadoFuncional();
 			System.out.println(prod.getFabCatalogoitem());
-			FabCatalogoitem fabcati = managercat.CatalogoItemsByID(prod.getFabCatalogoitem());
+			FabCatalogoitem fabcati = managercat.CatalogoItemsByID(prod
+					.getFabCatalogoitem());
 			cati_id = fabcati.getCatiId();
 			categoria = fabcati.getCatiNombre();
 			cati_idhijo = prod.getFabCatalogoitem();
@@ -404,9 +423,25 @@ public class CompraBean implements Serializable {
 				ediciontipo = true;
 				verhorario = true;
 			}
-			getListaProductofoto().clear();
-			getListaProductofoto().addAll(
-					managerprod.productoFotoByNombre(pro_nombre));
+			
+			getListaHorario().clear();
+			getListaHorario().addAll(
+					managerprod.horarioByProdId(prodser_id));
+			
+			for (int i = 1; i <= 12; i++) {
+	        	List<FabProductoFoto> cond;
+				try {
+					cond = managerprod.productoFotoByNombre(prod.getProNombre());
+					for (FabProductoFoto y : cond) {
+						System.out.println(y.getProfDireccion());
+						images.add(y.getProfDireccion());
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+	        }
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -414,11 +449,11 @@ public class CompraBean implements Serializable {
 		}
 		return "compra?faces-redirect=true";
 	}
-	
+
 	public void abrirDialog() {
-			RequestContext.getCurrentInstance().execute("PF('gu').show();");
+		RequestContext.getCurrentInstance().execute("PF('gu').show();");
 	}
-	
+
 	/**
 	 * limpia la informacion
 	 * 
@@ -441,14 +476,13 @@ public class CompraBean implements Serializable {
 		guardarin = false;
 		ediciontipo = false;
 		verhorario = false;
+		getImages().clear();
 		getListaProdFoto().clear();
 		getListaProdFoto().addAll(managerprod.findProdFoto());
 		return "index?faces-redirect=true";
 	}
-	
-	
-	 	 
-	    public List<String> getImages() {
-	        return images;
-	    }
+
+	public List<String> getImages() {
+		return images;
+	}
 }

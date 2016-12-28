@@ -204,10 +204,10 @@ public class catalogosBean implements Serializable {
 	 */
 	public String nuevoCatalogoitem() {
 		edicion = false;
-		cati_nombre="";
-		cati_estado="A";
-		cati_id=0;
-		imagen="300.jpg";
+		cati_nombre = "";
+		cati_estado = "A";
+		cati_id = 0;
+		imagen = "300.jpg";
 		return "ncatalogo?faces-redirect=true";
 	}
 
@@ -234,16 +234,18 @@ public class catalogosBean implements Serializable {
 				Mensaje.crearMensajeINFO("Actualizado - Modificado");
 				r = "catalogos?faces-redirect=true";
 				getListaCatalogoItems().clear();
-				getListaCatalogoItems().addAll(managercat.findAllCatalogoItems());
+				getListaCatalogoItems().addAll(
+						managercat.findAllCatalogoItems());
 			} else {
 				managercat.insertarCatalogoItems(cati_nombre, imagen.trim(),
 						cati_idpadre);
 				Mensaje.crearMensajeINFO("Registrado - Creado");
 				imagencat = false;
 				getListaCatalogoItems().clear();
-				getListaCatalogoItems().addAll(managercat.findAllCatalogoItems());
+				getListaCatalogoItems().addAll(
+						managercat.findAllCatalogoItems());
 			}
-				r = "catalogos?faces-redirect=true";
+			r = "catalogos?faces-redirect=true";
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
@@ -284,7 +286,7 @@ public class catalogosBean implements Serializable {
 			asignarCatItemitem();
 			asignarNombreImagen();
 			asignarCatItem();
-			imagen=cati.getCatiImagen();
+			imagen = cati.getCatiImagen();
 			edicion = true;
 			imagencat = false;
 			return "ncatalogo?faces-redirect=true";
@@ -307,19 +309,6 @@ public class catalogosBean implements Serializable {
 					.findCatalogoItemsByCatalogo(cat_id)) {
 				listadoSI.add(new SelectItem(t.getCatiId(), t.getCatiNombre()));
 			}
-		}
-		return listadoSI;
-	}
-
-	/**
-	 * metodo para mostrar los Catalogositems en productos
-	 * 
-	 */
-	public List<SelectItem> getListaCatalogo() {
-		List<SelectItem> listadoSI = new ArrayList<SelectItem>();
-		listadoSI.add(new SelectItem(0, "Seleccionar"));
-		for (FabCatalogo t : managercat.findAllCatalogos()) {
-			listadoSI.add(new SelectItem(t.getCatId(), t.getCatNombre()));
 		}
 		return listadoSI;
 	}
@@ -370,7 +359,7 @@ public class catalogosBean implements Serializable {
 		managercat.asignarcati(cati_idpadre);
 		return "";
 	}
-	
+
 	/**
 	 * metodo para asignar el catalogoitem al producto
 	 * 
@@ -405,7 +394,7 @@ public class catalogosBean implements Serializable {
 		setFabcati(cat);
 		RequestContext.getCurrentInstance().execute("PF('ce').show();");
 	}
-	
+
 	/**
 	 * metodo para conocer el prodid si esta usado
 	 * 
@@ -422,7 +411,8 @@ public class catalogosBean implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								"El nombre del catalogo del producto existe.", null));
+								"El nombre del catalogo del producto existe.",
+								null));
 			}
 		}
 		if (t == 0) {
@@ -601,8 +591,7 @@ public class catalogosBean implements Serializable {
 	public void abrirDialog() {
 		if (edicion == true) {
 			RequestContext.getCurrentInstance().execute("PF('gu').show();");
-		} else
-			if (!averiguarCatId(cati_nombre)) 
+		} else if (!averiguarCatId(cati_nombre))
 			RequestContext.getCurrentInstance().execute("PF('gu').show();");
 	}
 }

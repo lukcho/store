@@ -23,11 +23,13 @@
 				<p:layoutUnit position="west" size="200" header="CAT&Aacute;LOGOS"
 					resizable="true" minSize="40" maxSize="200" closable="true"
 					collapsible="true">
-					<p:tree value="#{basicView.root}" var="node">
+					<p:tree value="#{nodeBean.root}" var="node" dynamic="true"
+						selectionMode="single" selection="#{nodeBean.selectedNode}">
 						<p:treeNode>
 							<h:outputText value="#{node}" />
 						</p:treeNode>
 					</p:tree>
+
 				</p:layoutUnit>
 				<p:layoutUnit position="center" size="600">
 					<p:dataGrid var="proser" value="#{compraBean.listaProdFoto}"
@@ -35,13 +37,13 @@
 						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="6,12,16">
 
-						<p:panel header="#{proser.fabProducto.proNombre}"
+						<p:panel header="#{proser.fabProducto.proTipo}"
 							style="text-align:center">
 							<h:panelGrid columns="1" style="width:100%">
-								<p:graphicImage value="#{facesContex}/imgevent/300.jpg" width="150" height="150"/>
-								<h:outputText value="#{proser.fabProducto.proDescripcion}" />
+								<p:graphicImage value="#{facesContex}/imgevent/300.jpg"
+									width="150" height="150" />
+								<h:outputText value="#{proser.fabProducto.proNombre}" />
 								<h:outputText value="$ #{proser.fabProducto.proPrecio}" />
-								<h:outputText value="$ #{proser.fabProducto.proTipo}" />
 								<p:commandLink update=":frm:detalleproser"
 									oncomplete="PF('verproser').show()" title="Informacion">
 									<h:outputText styleClass="ui-icon ui-icon-search"
@@ -63,7 +65,8 @@
 				<p:outputPanel id="detalleproser" style="text-align:center;">
 					<p:panelGrid columns="2" columnClasses="label,value">
 						<f:facet name="header">
-							<p:graphicImage value="#{facesContex}/imgevent/300.jpg" width="150" height="150" />
+							<p:graphicImage value="#{facesContex}/imgevent/300.jpg"
+								width="150" height="150" />
 						</f:facet>
 						<h:outputText value="Nombre: " />
 						<h:outputText
@@ -80,11 +83,11 @@
 						<h:outputText value="Tipo: " />
 						<h:outputText
 							value="#{compraBean.fabproductofoto.fabProducto.proTipo}" />
-						<p:commandButton value="Comprar" styleClass="btn btn-info"
+						<p:commandButton value="Comprar" styleClass="btn btn-default"
 							action="#{compraBean.irComprar()}" style="padding:7px;"
 							update="frm messages">
 						</p:commandButton>
-						<p:commandButton value="Volver" styleClass="btn btn-info"
+						<p:commandButton value="Volver" styleClass="btn btn-default"
 							style="padding:7px;" actionListener="index.xhtml"
 							update="frm messages">
 						</p:commandButton>

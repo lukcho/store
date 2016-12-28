@@ -18,12 +18,12 @@ public class BasicView implements Serializable {
     @PostConstruct
     public void init() {
         root = new DefaultTreeNode("CATALOGO", null);
-        TreeNode node0 = new DefaultTreeNode("Node 0", root);
+//        TreeNode node0 = new DefaultTreeNode("Node 0", root);
         TreeNode node1 = new DefaultTreeNode("Node 1", root);
          
-        TreeNode node01 = new DefaultTreeNode("Node 0.1", node0);
+//        TreeNode node01 = new DefaultTreeNode("Node 0.1", node0);
          
-        TreeNode node10 = new DefaultTreeNode("Node 1.0", node1);
+//        TreeNode node10 = new DefaultTreeNode("Node 1.0", node1);
          
         node1.getChildren().add(new DefaultTreeNode("Node 1.1"));
  
